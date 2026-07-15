@@ -1,0 +1,167 @@
+Contact = (First Name, Last Name, Phone, Secondary Phone, Email, Secondary Email, Country, Created At)
+
+Company = (Unique Key, Logo, Name, Select Clients/Prospects, Industry, Phone, Email, GSTIN, Pan, Client Tax Type, Tax Id, Street, City, GST State Code, State, Postal Code, Country, Status, Last Communication Date, Delivery Address, 1, NTN #)
+
+Client = (Unique Key, Logo, Name, Select Clients/Prospects, Industry, Phone, Email, GSTIN, Pan, Client Tax Type, Tax Id, Street, City, GST State Code, State, Postal Code, Country, Status, Last Communication Date, Delivery Address, 1, NTN #)
+
+Supplier = (Unique Key, Logo, Name, Select Clients/Prospects, Industry, Phone, Email, GSTIN, Pan, Client Tax Type, Tax Id, Street, City, GST State Code, State, Postal Code, Country, Status, Last Communication Date, Delivery Address, 1, NTN #)
+
+
+Quotation = (Date, Expand Line Items, Quotation, Quoted To, Currency, Amount, Status, Place Of Supply, Valid Till Date, Due Amount, TDS (%), TDS, Payment Date, TAX Rate, Tax Amount, Acceptance Status, VAT of Recipient, Client Email, Client Phone, Quotation Email, Tax Invoice, Reverse Charge Applicable, Amount Due in PKR, Sub Total, Discount, Taxable Value, HSN/SAC list, SKU ID list, Quotation Amount in PKR, Total Additional Charges, Created By, Tags, Transaction Charge, Transporter Name, Transporter Mode, Distance, Workflow Name, Current Assignee, Current Stage, Current Status, Linked Documents, Quotation Title, Shopify Order Number, Signature Status)
+
+Invoice = (Date, Expand Line Items, Invoice, Billed To, Currency, Amount, Status, Place Of Supply, Next Scheduled Date, Due Date, Due Amount, TDS (%), TDS, Payment Date, TAX Rate, Tax Amount, Acceptance Status, VAT of Recipient, Client Email, Client Phone, Invoice Email, Amount Paid, Amount Paid in PKR, Reverse Charge Applicable, Amount Due in PKR, Sub Total, Discount, Taxable Value, HSN/SAC list, SKU ID list, Invoice Amount in PKR, Total Additional Charges, Created By, Tags, Scanned Document, Account Holder Name, Bank Name, Account Number, IFSC Code, IBAN, SWIFT Code, Sort Code, Transaction Charge, Transporter Name, Transporter Mode, Distance, Workflow Name, Current Assignee, Current Stage, Current Status, Is Synced, Linked Documents, Invoice Title, Shopify Order Number, Signature Status)
+
+PaymentReceipt = (Date, Expand Invoices, Payment Receipt, Billed To, Currency, Amount, Status, Place Of Supply, TAX Rate, VAT of Recipient, Client Email, Client Phone, Payment Receipt Email, Settled Amount, Unsettled Amount, Taxable Value, Created By, Linked Documents, Payment Receipt Title, Shopify Order Number, Signature Status, Submit)
+
+SalesOrder = (Date, Expand Line Items, Sales Order, Billed To, Currency, Amount, Status, Place Of Supply, Convert to Invoice, TAX Rate, Tax Amount, Acceptance Status, VAT of Recipient, Client Email, Client Phone, Sales Order Email, Amount Due in PKR, Sub Total, Discount, Taxable Value, HSN/SAC list, SKU ID list, Sales Order Amount in PKR, Total Additional Charges, Created By, Tags, Scanned Document, Account Holder Name, Bank Name, Account Number, IFSC Code, IBAN, SWIFT Code, Sort Code, Transaction Charge, Transporter Name, Transporter Mode, Distance, Linked Documents, Sales Order Title, Shopify Order Number, Signature Status, Submit)
+
+DeliveryChallan = (Date, Expand Line Items, Delivery Challan, Delivered To, Currency, Amount, Status, Place Of Supply, TAX Rate, Tax Amount, Acceptance Status, VAT of Recipient, Client Email, Client Phone, Delivery Challan Email, Trade/Legal Name, Amount Due in PKR, Sub Total, Discount, Taxable Value, HSN/SAC list, SKU ID list, Delivery Challan Amount in PKR, Total Additional Charges, Created By, Tags, Transaction Charge, Transporter Name, Transporter Mode, Distance, Linked Documents, Delivery Challan Title, Shopify Order Number, Signature Status)
+
+CreditNote = ()
+
+
+
+
+
+
+
+
+Expenditure = (Expense Date, Expand Line Items, Invoice, Vendor, Currency, Amount, Status, Place Of Supply, Next Scheduled Date, Due Date, Due Amount, TDS (%), TDS, Payment Date, Expenditure, Created At, Acknowledgement, Signed, Petty Expenditure, TAX Rate, Tax Amount, Acceptance Status, VAT of Recipient, Vendor Email, Vendor Phone, Email Vendor, Amount Paid, Amount Paid in PKR, Reverse Charge Applicable, Amount Due in PKR, Sub Total, Discount, Taxable Value, HSN/SAC list, SKU ID list, Expenditure Amount in PKR, Total Additional Charges, Created By, Tags, Scanned Document, Account Holder Name, Bank Name, Account Number, IFSC Code, IBAN, SWIFT Code, Sort Code, Transaction Charge, Transporter Name, Transporter Mode, Distance, Workflow Name, Current Assignee, Current Stage, Current Status, Is Synced, Linked Documents, Purchases and Expenses Title, Submit)
+
+PayoutReceipt = (Date, Expand Purchases, Payout Receipt, Vendor, Currency, Amount, Status, Place Of Supply, TAX Rate, VAT of Recipient, Vendor Email, Vendor Phone, Email Vendor, Settled Amount, Unsettled Amount, Taxable Value, Created By, Linked Documents, Payout Receipt Title, Shopify Order Number, Signature Status)
+
+PurchaseOrder = (Date, Expand Line Items, Purchase Order, Vendor, Currency, Amount, Status, Place Of Supply, Due Date, Due Amount, TDS (%), TDS, Payment Date, Convert PO, TAX Rate, Tax Amount, Acceptance Status, VAT of Recipient, Vendor Email, Vendor Phone, Email Vendor, Amount Due in PKR, Sub Total, Discount, Taxable Value, HSN/SAC list, SKU ID list, Purchase Order Amount in PKR, Total Additional Charges, Created By, Tags, Scanned Document, Account Holder Name, Bank Name, Account Number, IFSC Code, IBAN, SWIFT Code, Sort Code, Transaction Charge, Workflow Name, Current Assignee, Current Stage, Current Status, Linked Documents, Purchase Order Title, Shopify Order Number, Signature Status, Submit)
+
+DebitNote = ()
+
+
+
+
+
+
+AccountGroup = (Account Group, Type, Category, Is Default, Created By, Submit)
+
+ChartOfAccount = (Accounts, Account Group Name, Category, Type, Is Default, Created By, Balances Expander, Currency, Cr, Dr, Submit)
+
+VoucherBook = (Voucher Books, Voucher Book Type, Number of Entries, Number of Reversed Entries, Last Entry Date, Is Default, Created By)
+
+Balance Sheet = (Accounts, Amount, % of Total)
+
+Day Book = (Date, Account, Transaction Details, Transaction Type, Transaction No, Reversed, Remark, Currency, Debit Amount, Credit Amount, Amount)
+
+
+
+
+
+
+Item = (Warehouse Details, SKU, Image, Original Image, item, Item Type, Description, Buying Price, Selling Price, Landed Cost, Tax Rate(in %), Manage Stock, Strict Control, Is Sales Item,  Category, Total Stock, Length, Breadth, Height, Volume (in m³), Gross weight, Net Weight, Stock in Hand, Net Committed Stock, Stock Status, Reorder Point, Overstock Point, Unit, Average Selling Price, Average Buying Price, Total Sold Quantity, Total Purchase Quantity, Package Item, Tags, Tracking Method, Submit)
+
+Warehouse = (Warehouse Details, SKU, Image, Original Image, item, Item Type, Description, Buying Price, Selling Price, Landed Cost, Tax Rate(in %), Manage Stock, Strict Control, Is Sales Item, Category, Total Stock, Length, Breadth, Height, Volume (in m³), Gross weight, Net Weight, Stock in Hand, Net Committed Stock, Stock Status, Reorder Point, Overstock Point, Unit, Average Selling, Price, Average Buying Price, Total Sold Quantity, Total Purchase Quantity, Package Item, Tags, Tracking Method, Submit)
+
+Profit & Loss Statement = (Item, Package Item, SKU, HSN/SAC, Buying Price, Selling Price, Total Sold Quantity, Total Purchase Quantity, Current Stock, Average Selling Price, Average Buying Price, 
+Average Landed Cost, Gross Profit Margin(%), Submit)
+
+Stock Value Report = (Item Name, SKU, HSN, Unit, Stock in Hand, Unit Cost, Stock Value, Share of Total Value(%))
+
+Batch Expiry Report = (Item Name, Stock In Hand, Expired, Expiring in 0-15 days → Qty (% of total), Expiring in 0-15 days → Value, Expiring in 16-30 days → Qty (% of total), Expiring in 16-30 days → Value, Expiring in 31-60 days → Qty (% of total), Expiring in 31-60 days → Value, Expiring in 61-90 days → Qty (% of total), Expiring in 61-90 days → Value, Expiring in 90+ days → Qty (% of total), Expiring in 90+ days → Value, Expired 0-15 days ago → Qty (% of total), Expired 0-15 days ago → Value, Expired 16-30 days ago → Qty (% of total), Expired 16-30 days ago → Value, Expired 31-60 days ago → Qty (% of total), Expired 31-60 days ago → Value, Expired 61-90 days ago → Qty (% of total), Expired 61-90 days ago → Value, Expired 90+ days ago → Qty (% of total), Expired 90+ days ago → Value)
+
+Party Transactions = (Item Name, SKU, Trade Type, Total Quantity, Avg. Unit Price, Total Amount)
+
+All Transactions Report = (Transaction Date, Transaction Type, Item, SKU, HSN, Batch, Warehouse, Quantity, Unit, Stock In/Out, Price, Tax, Reason, Document Type, Document No., Client/Vendor, Status, Created By, Updated By)
+
+Stock Status Report = (Item, SKU, Unit, Last Stock Update, Needed for Healthy, Stock Status, Total Stock, Stock in Hand, Reorder Point, Overstock Point)
+
+
+
+
+Custom Reports = (Name, Created By, Description, Report Type, Created On, Last Updated)
+
+
+
+
+
+PaymentAccount (BankAccount/EmployeeAccount) = (Payment Account, Account Type, Linked Bank, Linked Employee, Linked Ledger, VPA, Created At)
+
+BankReconciliation = (Account Name, Statement Period, Status, Account Type, Currency, Uploaded On)
+
+
+
+
+
+SystemUser = ()
+
+Roles = ()
+
+Greeting = ()
+
+Testimonial = ()
+
+Setting = ()
+
+settings/business
+settings/integrations
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+contacts
+companies
+clients
+quotations
+invoices
+payment-receipts
+sales-orders
+delivery-challans
+credit-notes
+suppliers
+expenditures
+payout-receipts
+purchase-orders
+debit-notes
+account-groups
+chart-of-accounts
+voucher-books
+items
+payment-accounts
+bank-accounts
+employee-accounts
+bank-reconciliation
+users
+roles
+greetings
+testimonials
+settings/business
+settings/integrations
+
