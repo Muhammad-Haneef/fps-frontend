@@ -4,13 +4,13 @@ import { use, useEffect } from "react";
 import { ModuleForm } from "../module-form";
 import { PageHeader } from "@/components/layouts/admin/page-header";
 import BackButton from "@/components/form/back-button";
-import { useWarehouseStore } from "@/stores/useWarehouseStore";
+import { useContactStore } from "@/stores/useContactStore";
 
-export default function WarehousePage({ params }) {
+export default function Page({ params }) {
   const { id } = use(params);
   const isNew = id === "add";
 
-  const getRecord = useWarehouseStore((s) => s.getRecord);
+  const getRecord = useContactStore((s) => s.getRecord);
 
   useEffect(() => {
     if (!isNew) getRecord(id);

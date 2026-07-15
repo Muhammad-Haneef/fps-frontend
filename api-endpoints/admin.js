@@ -3,8 +3,12 @@ import { createCrudEndpoints } from "@/stores/factories/createCrudEndpoints";
 
 
 export const admin = {
-  warehouses: createCrudEndpoints('warehouses'),
 
+  // Items
+  warehouses: createCrudEndpoints('warehouses'),
+  items: createCrudEndpoints('items'),
+
+  // Meta Data
   countries: createCrudEndpoints('countries'),
   states: createCrudEndpoints('states'),
   cities: createCrudEndpoints('cities'),
@@ -39,7 +43,8 @@ export const admin = {
   chartOfAccounts: createCrudEndpoints('chart-of-accounts'),
 
   voucherBooks: createCrudEndpoints('voucher-books'),
-  items: createCrudEndpoints('items'),
+  
+  
   paymentAccounts: createCrudEndpoints('payment-accounts'),
   bankAccounts: createCrudEndpoints('bank-accounts'),
   systemUsers: createCrudEndpoints('system-users'),

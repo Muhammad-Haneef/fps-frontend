@@ -1,81 +1,150 @@
 "use client";
 
 import ActionsBtns from "@/components/actions-btns";
-import { useWarehouseStore } from "@/stores/useWarehouseStore";
+import { useItemStore } from "@/stores/useItemStore";
 
 export const Columns = [
+
   {
-    header: "Warehouse",
-    accessorKey: "a",
+    header: "Warehouse Details",
+    accessorKey: "warehouse_details",
   },
   {
     header: "SKU",
-    accessorKey: "a",
+    accessorKey: "sku",
   },
   {
     header: "Image",
-    accessorKey: "a",
+    accessorKey: "image",
   },
   {
-    header: "Product Name",
-    accessorKey: "a",
+    header: "Original Image",
+    accessorKey: "original_image",
+  },
+  {
+    header: "Item",
+    accessorKey: "item",
+  },
+  {
+    header: "Item Type",
+    accessorKey: "item_type",
   },
   {
     header: "Buying Price",
-    accessorKey: "a",
+    accessorKey: "buying_price",
   },
   {
     header: "Selling Price",
-    accessorKey: "a",
+    accessorKey: "selling_price",
   },
   {
     header: "Landed Cost",
-    accessorKey: "a",
+    accessorKey: "landed_cost",
   },
   {
-    id: "actions",
+    header: "Tax Rate (%)",
+    accessorKey: "tax_rate",
+  },
+  {
+    header: "Manage Stock",
+    accessorKey: "manage_stock",
+  },
+  {
+    header: "Strict Control",
+    accessorKey: "strict_control",
+  },
+  {
+    header: "Is Sales Item",
+    accessorKey: "is_sales_item",
+  },
+  {
+    header: "Category",
+    accessorKey: "category",
+  },
+  {
+    header: "Total Stock",
+    accessorKey: "total_stock",
+  },
+  {
+    header: "Length",
+    accessorKey: "length",
+  },
+  {
+    header: "Breadth",
+    accessorKey: "breadth",
+  },
+  {
+    header: "Height",
+    accessorKey: "height",
+  },
+  {
+    header: "Volume (m³)",
+    accessorKey: "volume",
+  },
+  {
+    header: "Gross Weight",
+    accessorKey: "gross_weight",
+  },
+  {
+    header: "Net Weight",
+    accessorKey: "net_weight",
+  },
+  {
+    header: "Stock in Hand",
+    accessorKey: "stock_in_hand",
+  },
+  {
+    header: "Net Committed Stock",
+    accessorKey: "net_committed_stock",
+  },
+  {
+    header: "Stock Status",
+    accessorKey: "stock_status",
+  },
+  {
+    header: "Reorder Point",
+    accessorKey: "reorder_point",
+  },
+  {
+    header: "Overstock Point",
+    accessorKey: "overstock_point",
+  },
+  {
+    header: "Unit",
+    accessorKey: "unit",
+  },
+  {
+    header: "Average Selling Price",
+    accessorKey: "average_selling_price",
+  },
+  {
+    header: "Average Buying Price",
+    accessorKey: "average_buying_price",
+  },
+  {
+    header: "Total Sold Quantity",
+    accessorKey: "total_sold_quantity",
+  },
+  {
+    header: "Total Purchase Quantity",
+    accessorKey: "total_purchase_quantity",
+  },
+  {
+    header: "Tags",
+    accessorKey: "tags",
+  },
+  {
+    header: "Tracking Method",
+    accessorKey: "tracking_method",
+  },
+  {
     header: () => <div className="text-center">Actions</div>,
+    id: "last",
     cell: ({ row }) => (
       <ActionsBtns
         record={row.original}
-        useStore={useWarehouseStore}
+        useStore={useItemStore}
       />
     ),
   },
 ];
-
-/*
-Warehouse Details
-SKU
-Image
-Original Image
-item
-Item Type
-Buying Price
-Selling Price
-Landed Cost
-Tax Rate(in %)
-Manage Stock
-Strict Control
-Is Sales Item
-Category
-Total Stock
-Length
-Breadth
-Height
-Volume (in m³)
-Gross weight
-Net Weight
-Stock in Hand
-Net Committed Stock
-Stock Status
-Reorder Point
-Overstock Point
-Unit
-Average Selling Price
-Average Buying Price
-Total Sold Quantity
-Total Purchase Quantity
-Tags
-Tracking Method
-*/
