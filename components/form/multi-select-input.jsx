@@ -6,15 +6,15 @@ import { useFormContext, Controller } from "react-hook-form";
 import { Label } from "@/components/ui/label";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Button } from "@/components/ui/button";
-import { HelpCircle, ChevronDown, Check, X, Loader2 } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { HelpCircle, ChevronDown, X, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-function SelectInputBase({
+function MultiSelectInputBase({
   label, icon: IconComponent, error, helperText, tooltip,
-  disabled, loading = false, placeholder = "Select an option...", options = [],
-  value, onChange, onBlur, id, is_required, clearable = true, searchable = true,
-  onCreate, optionEnd, dir = "ltr", className, ...props
+  disabled, loading = false, placeholder = "Select options...", options = [],
+  value = [], onChange, onBlur, id, is_required, clearable = true,
+  searchable = true, onCreate, dir = "ltr", className, ...props
 }) {
   const generatedId = useId();
   const inputId = id || generatedId;
@@ -22,36 +22,44 @@ function SelectInputBase({
   const [searchTerm, setSearchTerm] = useState("");
 
   const normalizedOptions = useMemo(() => Array.isArray(options) ? options : [], [options]);
-  const selectedOption = useMemo(() => normalizedOptions.find((opt) => String(opt.value) === String(value)), [value, normalizedOptions]);
+  const selectedValues = useMemo(() => Array.isArray(value) ? value.map(v => String(v)) : [], [value]);
+  const selectedItems = useMemo(() => normalizedOptions.filter((opt) => selectedValues.includes(String(opt.value))), [selectedValues, normalizedOptions]);
   const filteredOptions = useMemo(() => {
-    if (!searchTerm) return normalizedOptions;
-    return normalizedOptions.filter((opt) => String(opt.label).toLowerCase().includes(searchTerm.toLowerCase()));
-  }, [searchTerm, normalizedOptions]);
+    const unselected = normalizedOptions.filter((opt) => !selectedValues.includes(String(opt.value)));
+    if (!searchTerm) return unselected;
+    return unselected.filter((opt) => String(opt.label).toLowerCase().includes(searchTerm.toLowerCase()));
+  }, [searchTerm, normalizedOptions, selectedValues]);
 
   const handleSelect = (option) => {
     if (disabled || loading) return;
-    if (onChange) onChange(option.value);
-    setIsOpen(false);
+    const newValue = [...selectedValues, String(option.value)];
+    if (onChange) onChange(newValue);
     setSearchTerm("");
+  };
+
+  const handleRemove = (optVal, e) => {
+    e.stopPropagation();
+    if (disabled || loading) return;
+    const newValue = selectedValues.filter((v) => v !== String(optVal));
+    if (onChange) onChange(newValue);
   };
 
   const handleClear = (e) => {
     e.stopPropagation();
     if (disabled || loading) return;
-    if (onChange) onChange("");
+    if (onChange) onChange([]);
     setSearchTerm("");
   };
 
   const handleCreate = () => {
     if (!onCreate || !searchTerm) return;
     onCreate(searchTerm);
-    setIsOpen(false);
     setSearchTerm("");
   };
 
   const displayError = error;
   const isRTL = dir === "rtl";
-  const hasValue = value !== undefined && value !== null && value !== "";
+  const hasValue = selectedValues.length > 0;
 
   return (
     <div className={cn("w-full flex flex-col gap-1.5", className)} dir={dir}>
@@ -73,33 +81,45 @@ function SelectInputBase({
 
       <Popover open={isOpen} onOpenChange={setIsOpen}>
         <PopoverTrigger asChild>
-          <Button
-            id={inputId} variant="outline" disabled={disabled || loading}
+          <div
+            id={inputId}
             className={cn(
-              "w-full h-9 justify-between text-left font-normal border border-input bg-background hover:bg-accent/50 text-sm px-3 rounded-lg",
-              displayError && "border-destructive focus-visible:ring-destructive/20",
-              !hasValue && "text-muted-foreground",
+              "w-full min-h-[36px] flex flex-wrap gap-1.5 items-center justify-between border border-input rounded-lg bg-background text-sm px-3 py-1.5 cursor-pointer focus-within:ring-3 focus-within:ring-ring/50 focus-within:border-ring transition-all",
+              displayError && "border-destructive focus-within:ring-destructive/20",
+              disabled && "opacity-50 cursor-not-allowed pointer-events-none",
               isRTL && "flex-row-reverse text-right"
             )}
             {...props}
           >
-            <div className="flex items-center gap-2 overflow-hidden truncate">
-              {IconComponent && !isRTL && <IconComponent className="h-4 w-4 shrink-0 text-muted-foreground" />}
-              <span className="truncate">{selectedOption ? selectedOption.label : placeholder}</span>
+            <div className="flex flex-wrap gap-1 items-center flex-1 overflow-hidden">
+              {selectedItems.map((item) => (
+                <Badge key={item.value} variant="secondary" className="flex items-center gap-1 text-xs pl-2 pr-1 py-0.5 rounded-md font-medium">
+                  {item.icon && <span className="shrink-0">{item.icon}</span>}
+                  <span className="truncate max-w-[120px]">{item.label}</span>
+                  {!disabled && (
+                    <span onClick={(e) => handleRemove(item.value, e)} className="rounded p-0.5 hover:bg-muted-foreground/20 text-muted-foreground hover:text-foreground cursor-pointer shrink-0">
+                      <X className="h-3 w-3" />
+                    </span>
+                  )}
+                </Badge>
+              ))}
+              {!hasValue && <span className="text-muted-foreground">{placeholder}</span>}
             </div>
             <div className="flex items-center gap-1 shrink-0 ml-auto">
               {loading ? <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" /> : (
                 <>
-                  {clearable && hasValue && <span onClick={handleClear} className="p-0.5 rounded hover:bg-muted text-muted-foreground hover:text-foreground cursor-pointer"><X className="h-3.5 w-3.5" /></span>}
+                  {clearable && hasValue && !disabled && (
+                    <span onClick={handleClear} className="p-0.5 rounded hover:bg-muted text-muted-foreground hover:text-foreground cursor-pointer"><X className="h-3.5 w-3.5" /></span>
+                  )}
                   <ChevronDown className="h-4 w-4 text-muted-foreground opacity-50 shrink-0" />
                 </>
               )}
             </div>
-          </Button>
+          </div>
         </PopoverTrigger>
 
         <PopoverContent className="p-0 w-[var(--radix-popover-trigger-width)] min-w-[200px]" align="start">
-          <div className="relative flex flex-col max-h-[300px]">
+          <div className="flex flex-col max-h-[300px]">
             {searchable && (
               <div className="flex items-center border-b border-input px-3 py-2 bg-background z-10">
                 <input type="text" placeholder="Search..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)}
@@ -112,29 +132,19 @@ function SelectInputBase({
                 <div className="px-3 py-2.5 text-sm text-center text-muted-foreground">
                   {onCreate && searchTerm ? (
                     <button onClick={handleCreate} className="w-full text-primary font-medium text-xs py-1 hover:underline cursor-pointer">Create "{searchTerm}"</button>
-                  ) : "No options found"}
+                  ) : "No options available"}
                 </div>
-              ) : filteredOptions.map((option) => {
-                const isSelected = String(option.value) === String(value);
-                return (
-                  <div key={option.value} onClick={() => !option.disabled && handleSelect(option)}
-                    className={cn(
-                      "relative flex items-center justify-between px-3 py-2 text-sm cursor-pointer select-none transition-colors",
-                      option.disabled ? "text-muted-foreground opacity-50 cursor-not-allowed" : "hover:bg-accent hover:text-accent-foreground",
-                      isSelected && "bg-accent/50 font-medium"
-                    )}
-                  >
-                    <div className="flex items-center gap-2 truncate">
-                      {option.icon && <span className="shrink-0">{option.icon}</span>}
-                      <span className="truncate">{option.label}</span>
-                    </div>
-                    <div className="flex items-center gap-2 shrink-0">
-                      {optionEnd && optionEnd(option)}
-                      {isSelected && <Check className="h-4 w-4 text-primary shrink-0" />}
-                    </div>
-                  </div>
-                );
-              })}
+              ) : filteredOptions.map((option) => (
+                <div key={option.value} onClick={() => !option.disabled && handleSelect(option)}
+                  className={cn(
+                    "relative flex items-center gap-2 px-3 py-2 text-sm cursor-pointer select-none transition-colors",
+                    option.disabled ? "text-muted-foreground opacity-50 cursor-not-allowed" : "hover:bg-accent hover:text-accent-foreground"
+                  )}
+                >
+                  {option.icon && <span className="shrink-0">{option.icon}</span>}
+                  <span className="truncate">{option.label}</span>
+                </div>
+              ))}
             </div>
           </div>
         </PopoverContent>
@@ -150,16 +160,16 @@ function SelectInputBase({
   );
 }
 
-export default function SelectInput({ name, ...props }) {
+export default function MultiSelectInput({ name, ...props }) {
   const formContext = useFormContext();
   if (formContext && name) {
     return (
       <Controller name={name} control={formContext.control}
         render={({ field, fieldState: { error } }) => (
-          <SelectInputBase {...field} error={error?.message || props.error} {...props} />
+          <MultiSelectInputBase {...field} error={error?.message || props.error} {...props} />
         )}
       />
     );
   }
-  return <SelectInputBase {...props} />;
+  return <MultiSelectInputBase {...props} />;
 }

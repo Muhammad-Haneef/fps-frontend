@@ -25,7 +25,7 @@ function RadioInputBase({
     <div className={cn("w-full flex flex-col gap-2", className)} dir={dir}>
       {label && (
         <div className="flex items-center gap-1.5">
-          <Label className={cn("text-xs font-semibold uppercase tracking-wider text-muted-foreground", error && "text-destructive", disabled && "opacity-50")}>
+          <Label className={cn("text-xs font-semibold tracking-wider text-muted-foreground", error && "text-destructive", disabled && "opacity-50")}>
             {label}{is_required && <span className="text-destructive ml-1">*</span>}
           </Label>
           {tooltip && (

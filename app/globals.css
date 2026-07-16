@@ -139,3 +139,59 @@
     @apply text-sm;
   }
 }
+
+/* Sticky table columns */
+.sticky-cell-left,
+.sticky-cell-right,
+.sticky-header-left,
+.sticky-header-right {
+  position: sticky;
+  z-index: 10;
+}
+
+.sticky-header-left,
+.sticky-header-right {
+  z-index: 20; /* Keep headers above body cells */
+}
+
+/* Positions & Shadows */
+.sticky-cell-left,
+.sticky-header-left {
+  left: 0;
+  box-shadow: 2px 0 5px -2px rgba(0, 0, 0, 0.15);
+}
+
+.sticky-cell-right,
+.sticky-header-right {
+  right: 0;
+  box-shadow: -2px 0 5px -2px rgba(0, 0, 0, 0.15);
+}
+
+/* Background colors to prevent scrolled content bleeding through */
+.sticky-cell-left,
+.sticky-cell-right {
+  background-color: var(--card); /* Base table background */
+}
+
+.sticky-header-left,
+.sticky-header-right {
+  background-color: color-mix(in srgb, var(--muted) 40%, var(--card));
+}
+
+/* Zebra striping for sticky body cells */
+tr:nth-child(even) .sticky-cell-left,
+tr:nth-child(even) .sticky-cell-right {
+  background-color: color-mix(in srgb, var(--muted) 15%, var(--card));
+}
+
+/* Hover state for sticky cells */
+tr:hover .sticky-cell-left,
+tr:hover .sticky-cell-right {
+  background-color: color-mix(in srgb, var(--muted) 40%, var(--card)) !important;
+}
+
+/* Selected state for sticky cells */
+tr[data-state="selected"] .sticky-cell-left,
+tr[data-state="selected"] .sticky-cell-right {
+  background-color: color-mix(in srgb, var(--primary) 5%, var(--card)) !important;
+}

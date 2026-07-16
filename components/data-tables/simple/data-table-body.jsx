@@ -49,11 +49,22 @@ export function DataTableBody({ table }) {
             i % 2 === 1 && "bg-muted/[0.15]",
           )}
         >
-          {row.getVisibleCells().map((cell) => (
-            <TableCell key={cell.id} className="px-4 py-3 text-sm">
-              {flexRender(cell.column.columnDef.cell, cell.getContext())}
-            </TableCell>
-          ))}
+          {row.getVisibleCells().map((cell, index) => {
+            const isFirst = index === 0;
+            const isLast = index === row.getVisibleCells().length - 1;
+            return (
+              <TableCell
+                key={cell.id}
+                className={cn(
+                  "px-4 py-3 text-sm",
+                  isFirst && "sticky-cell-left",
+                  isLast && "sticky-cell-right"
+                )}
+              >
+                {flexRender(cell.column.columnDef.cell, cell.getContext())}
+              </TableCell>
+            );
+          })}
         </TableRow>
       ))}
     </TableBody>

@@ -6,20 +6,38 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 
+
+// Components
+
+import FormProvider from "@/components/form/form-provider";
+import FormSkeleton from "@/components/skeletons/form";
+import FormCard from "@/components/form/card";
 import Accordion from "@/components/accordion";
 import AddressFields from "@/components/lookups/address-fields";
 import SocialFields from "@/components/lookups/social-fields";
 
-import BasicInfo from "./form-partials/basic";
-import Details from "./form-partials/details";
-import Tax from "./form-partials/tax";
+// Form Partials
+// import BasicInfo from "./form-partials/basic";
+// import Details from "./form-partials/details";
+// import Tax from "./form-partials/tax";
 import { Schema, FormValues } from "./form-partials/schema-values";
 
-import FormProvider from "@/components/form/form-provider";
-import FormCard from "@/components/form/card";
-import FormSkeleton from "@/components/skeletons/form";
+// Form Partials
+import { itemSchema, defaultValues } from "./form-partials/schema";
+import Details from "./form-partials/details";
+import Accounts from "./form-partials/accounts";
+import PricingTax from "./form-partials/pricing-tax";
+import Stock from "./form-partials/stock";
+import ReorderOverstock from "./form-partials/reorder-overstock";
+
+
+
 
 import { useItemStore } from "@/stores/useItemStore";
+
+
+
+
 
 export function ModuleForm() {
   const { id } = useParams();
@@ -57,29 +75,29 @@ export function ModuleForm() {
   const items = useMemo(
     () => [
       {
-        value: "basic",
-        trigger: "Basic Information",
-        content: <BasicInfo />,
-      },
-      {
-        value: "details",
-        trigger: "Additional Details",
+        value: "section1",
+        trigger: "1. Item/Product Details",
         content: <Details />,
-      },      
-      {
-        value: "tax",
-        trigger: "Tax Information",
-        content: <Tax />,
       },
       {
-        value: "address",
-        trigger: "Address Information",
-        content: <AddressFields />,
+        value: "section2",
+        trigger: "2. Accounting Details",
+        content: <Accounts />,
       },
       {
-        value: "social",
-        trigger: "Social Information",
-        content: <SocialFields />,
+        value: "section3",
+        trigger: "3. Pricing & Taxation",
+        content: <PricingTax />,
+      },
+      {
+        value: "section4",
+        trigger: "4. Stock Management",
+        content: <Stock />,
+      },
+      {
+        value: "section5",
+        trigger: "5. Reorder & Overstock",
+        content: <ReorderOverstock />,
       },
     ],
     [],

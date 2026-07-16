@@ -1,0 +1,41 @@
+"use client";
+
+import { use, useEffect } from "react";
+
+import TextInput from "@/components/form/text-input";
+import TextareaInput from "@/components/form/textarea-input";
+import DropDownByStore from "@/components/lookups/dropdown-by-store";
+import { BooleanField } from "@/components/lookups/common-fields";
+
+import { useOwnershipsStore } from "@/stores/meta-data/useOwnershipsStore";
+import { useCompanySizesStore } from "@/stores/meta-data/useCompanySizesStore";
+import { useSourceTypesStore } from "@/stores/meta-data/useSourceTypesStore";
+
+export default function Details() {
+  /*
+    useOwnershipsStore
+useCompanySizesStore
+useSourceTypesStore
+    */
+
+  return (
+    <div className="space-y-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+        details
+        {/*
+        <TextInput label="Display Name" name="display_name" />
+        <TextInput label="Job Title" name="job_title" />
+        <TextInput label="Department" name="department" />
+        <DropDownByStore
+          name="source_id"
+          label="Source"
+          useStore={useSourceTypesStore}
+        />
+        <TextInput type="number" label="Sort Order" name="sort_by" />
+
+        <BooleanField label="Is Active" name="is_active" />
+        */}
+      </div>
+    </div>
+  );
+}

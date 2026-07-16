@@ -82,12 +82,10 @@ export function DataTable({
       <DataTablePagination table={table} totalRows={totalRows} position="top" />
 
       <div className="overflow-hidden rounded-md border border-border/60 bg-card shadow-lg">
-        <div className="overflow-x-auto">
-          <Table>
-            <DataTableHeader table={table} />
-            <DataTableBody table={table} />
-          </Table>
-        </div>
+        <Table>
+          <DataTableHeader table={table} />
+          <DataTableBody table={table} />
+        </Table>
       </div>
 
       <DataTablePagination

@@ -14,16 +14,20 @@ export function DataTableHeader({ table }) {
           key={headerGroup.id}
           className="border-b border-border/60 bg-muted/40 hover:bg-muted/40"
         >
-          {headerGroup.headers.map((header) => {
+          {headerGroup.headers.map((header, index) => {
             const sortable = header.column.getCanSort();
             const sortState = header.column.getIsSorted();
+            const isFirst = index === 0;
+            const isLast = index === headerGroup.headers.length - 1;
 
             return (
               <TableHead
                 key={header.id}
                 className={cn(
                   "h-10 px-4 text-xs font-medium uppercase tracking-wide text-muted-foreground",
-                  header.column.id === "serial" && "w-12"
+                  header.column.id === "serial" && "w-12",
+                  isFirst && "sticky-header-left",
+                  isLast && "sticky-header-right"
                 )}
               >
                 {header.isPlaceholder ? null : sortable ? (

@@ -5,15 +5,8 @@ import { useState, useId, useRef, useEffect } from "react";
 import { useFormContext, Controller } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-
-import { HelpCircle, Circle } from "lucide-react";
-
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { HelpCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 // Helper function to validate input
@@ -26,7 +19,7 @@ const validateInputText = ({
   blockedSymbols,
   allowNumbers,
   allowLetters,
-  customValidator,
+  customValidator
 }) => {
   if (!inputValue) return { isValid: true, errorMessage: "" };
 
@@ -47,10 +40,7 @@ const validateInputText = ({
   if (isValid && type === "text") {
     // Blocked symbols
     if (blockedSymbols) {
-      const escapedSymbols = blockedSymbols.replace(
-        /[.*+?^${}()|[\]\\]/g,
-        "\\$&",
-      );
+      const escapedSymbols = blockedSymbols.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
       const blockedRegex = new RegExp(`[${escapedSymbols}]`);
       if (blockedRegex.test(inputValue)) {
         isValid = false;
@@ -64,9 +54,7 @@ const validateInputText = ({
       const allowedParts = [];
 
       if (allowLetters) {
-        allowedChars.push(
-          "a-zA-Z\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\u0900-\u097F",
-        );
+        allowedChars.push("a-zA-Z\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\u0900-\u097F");
         allowedParts.push("letters");
       }
       if (allowNumbers) {
@@ -74,16 +62,12 @@ const validateInputText = ({
         allowedParts.push("numbers");
       }
       if (allowedSymbols) {
-        const escapedSymbols = allowedSymbols.replace(
-          /[.*+?^${}()|[\]\\]/g,
-          "\\$&",
-        );
+        const escapedSymbols = allowedSymbols.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
         allowedChars.push(escapedSymbols);
         allowedParts.push(`symbols: ${allowedSymbols}`);
       }
 
-      //const dynamicRegex = new RegExp(`^[${allowedChars.join("")}]*$`);
-      const dynamicRegex = new RegExp(`^[${allowedChars.join("")}\\s\\-_]*$`);
+      const dynamicRegex = new RegExp(`^[${allowedChars.join("")}]*$`);
       if (!dynamicRegex.test(inputValue)) {
         isValid = false;
         if (allowedParts.length === 1) {
@@ -134,8 +118,7 @@ const validateInputText = ({
 function TextInputBase({
   label,
   type = "text",
-  icon,
-  iconComponent: IconComponent,
+  icon: IconComponent,
   error,
   helperText,
   tooltip,
@@ -182,7 +165,7 @@ function TextInputBase({
       blockedSymbols,
       allowNumbers,
       allowLetters,
-      customValidator,
+      customValidator
     });
 
     if (isValid || newValue === "") {
@@ -207,9 +190,6 @@ function TextInputBase({
   const displayError = error || validationError;
   const isRTL = dir === "rtl";
 
-  const LucideIcons =
-    !IconComponent && icon ? LucideIcons[icon] || LucideIcons.Circle : null;
-
   return (
     <div className={cn("w-full flex flex-col gap-1.5", className)} dir={dir}>
       {label && (
@@ -217,9 +197,9 @@ function TextInputBase({
           <Label
             htmlFor={inputId}
             className={cn(
-              "text-xs tracking-wider text-muted-foreground transition-colors",
+              "text-xs font-semibold tracking-wider text-muted-foreground transition-colors",
               displayError && "text-destructive",
-              disabled && "opacity-50",
+              disabled && "opacity-50"
             )}
           >
             {label}
@@ -230,7 +210,7 @@ function TextInputBase({
             <TooltipProvider>
               <Tooltip delayDuration={300}>
                 <TooltipTrigger asChild>
-                  <LucideIcons.HelpCircle className="h-3.5 w-3.5 text-muted-foreground/75 cursor-pointer hover:text-foreground" />
+                  <HelpCircle className="h-3.5 w-3.5 text-muted-foreground/75 cursor-pointer hover:text-foreground" />
                 </TooltipTrigger>
                 <TooltipContent>
                   <p className="max-w-xs text-xs">{tooltip}</p>
@@ -243,6 +223,20 @@ function TextInputBase({
 
       {/* Input container */}
       <div className="relative w-full">
+        {/* Input Left Icon */}
+        {IconComponent && !isRTL && (
+          <div className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground/70 pointer-events-none">
+            <IconComponent className="h-4 w-4" />
+          </div>
+        )}
+
+        {/* Input Right Icon (RTL) */}
+        {IconComponent && isRTL && (
+          <div className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground/70 pointer-events-none">
+            <IconComponent className="h-4 w-4" />
+          </div>
+        )}
+
         <Input
           id={inputId}
           ref={inputRef}
@@ -255,10 +249,9 @@ function TextInputBase({
           maxLength={maxLength}
           className={cn(
             "w-full h-9 rounded-lg border border-input bg-background text-sm transition-shadow",
-            icon && (isRTL ? "pr-9" : "pl-9"),
-            displayError &&
-              "border-destructive focus-visible:ring-destructive/20",
-            isRTL && "text-right",
+            IconComponent && (isRTL ? "pr-9" : "pl-9"),
+            displayError && "border-destructive focus-visible:ring-destructive/20",
+            isRTL && "text-right"
           )}
           {...props}
         />

@@ -5,30 +5,13 @@ import { useId } from "react";
 import { useFormContext, Controller } from "react-hook-form";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { HelpCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 function CheckboxInputBase({
-  title,
-  label,
-  icon: Icon, // pass a lucide-react component, e.g. icon={Mail}
-  error,
-  helperText,
-  tooltip,
-  disabled,
-  id,
-  is_required,
-  checked,
-  onChange,
-  arrayMode = false,
-  className,
-  ...props
+  title, label, icon: IconComponent, error, helperText, tooltip,
+  disabled, id, is_required, checked, onChange, arrayMode = false, className, ...props
 }) {
   const generatedId = useId();
   const inputId = id || generatedId;
@@ -43,37 +26,28 @@ function CheckboxInputBase({
     <div className={cn("flex flex-col gap-1", className)}>
       <div className="flex items-center gap-2.5">
         <Checkbox
-          id={inputId}
-          checked={checked}
+          id={inputId} checked={checked}
           onCheckedChange={handleCheckedChange}
-          disabled={disabled}
-          {...props}
+          disabled={disabled} {...props}
         />
         {displayLabel && (
           <div className="flex items-center gap-1.5">
-            <Label
-              htmlFor={inputId}
+            <Label htmlFor={inputId}
               className={cn(
                 "text-sm font-medium leading-none cursor-pointer select-none",
                 disabled && "opacity-50 cursor-not-allowed",
                 error && "text-destructive"
               )}
             >
-              {Icon && (
-                <Icon className="h-4 w-4 inline mr-1.5 align-text-bottom text-muted-foreground" />
-              )}
+              {IconComponent && <IconComponent className="h-4 w-4 inline mr-1.5 align-text-bottom text-muted-foreground" />}
               {displayLabel}
               {is_required && <span className="text-destructive ml-1">*</span>}
             </Label>
             {tooltip && (
               <TooltipProvider>
                 <Tooltip delayDuration={300}>
-                  <TooltipTrigger asChild>
-                    <HelpCircle className="h-3.5 w-3.5 text-muted-foreground/75 cursor-pointer hover:text-foreground" />
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p className="max-w-xs text-xs">{tooltip}</p>
-                  </TooltipContent>
+                  <TooltipTrigger asChild><HelpCircle className="h-3.5 w-3.5 text-muted-foreground/75 cursor-pointer hover:text-foreground" /></TooltipTrigger>
+                  <TooltipContent><p className="max-w-xs text-xs">{tooltip}</p></TooltipContent>
                 </Tooltip>
               </TooltipProvider>
             )}
@@ -82,23 +56,15 @@ function CheckboxInputBase({
       </div>
       {(helperText || error) && (
         <div className="text-[11px] px-6">
-          {error ? (
-            <span className="text-destructive font-medium">{error}</span>
-          ) : (
-            <span className="text-muted-foreground">{helperText}</span>
-          )}
+          {error ? <span className="text-destructive font-medium">{error}</span>
+            : <span className="text-muted-foreground">{helperText}</span>}
         </div>
       )}
     </div>
   );
 }
 
-export default function CheckboxInput({
-  name,
-  arrayMode = false,
-  value: arrayValue,
-  ...props
-}) {
+export default function CheckboxInput({ name, arrayMode = false, value: arrayValue, ...props }) {
   const formContext = useFormContext();
 
   if (formContext && name) {
@@ -111,30 +77,18 @@ export default function CheckboxInput({
           : selectedValues.filter((v) => String(v) !== String(arrayValue));
         formContext.setValue(name, updatedValues, { shouldValidate: true });
       };
-      return (
-        <CheckboxInputBase
-          checked={isChecked}
-          onChange={handleCheckedChange}
-          {...props}
-        />
-      );
+      return <CheckboxInputBase checked={isChecked} onChange={handleCheckedChange} {...props} />;
     }
     return (
-      <Controller
-        name={name}
-        control={formContext.control}
+      <Controller name={name} control={formContext.control}
         render={({ field, fieldState: { error } }) => (
-          <CheckboxInputBase
-            {...field}
-            checked={!!field.value}
+          <CheckboxInputBase {...field} checked={!!field.value}
             onChange={(checked) => field.onChange(checked)}
-            error={error?.message || props.error}
-            {...props}
+            error={error?.message || props.error} {...props}
           />
         )}
       />
     );
   }
-
   return <CheckboxInputBase {...props} />;
 }

@@ -63,7 +63,7 @@ function TextareaInputBase({
           <Label
             htmlFor={inputId}
             className={cn(
-              "text-xs font-semibold uppercase tracking-wider text-muted-foreground",
+              "text-xs font-semibold tracking-wider text-muted-foreground",
               displayError && "text-destructive",
               disabled && "opacity-50"
             )}
