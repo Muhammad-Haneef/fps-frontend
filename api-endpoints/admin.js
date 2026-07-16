@@ -13,8 +13,9 @@ export const admin = {
   states: createCrudEndpoints('states'),
   cities: createCrudEndpoints('cities'),
   systemUsers: createCrudEndpoints('system-users'),
+  tags: createCrudEndpoints('tags'),
 
-  contacts: createCrudEndpoints('contacts'),  
+  contacts: createCrudEndpoints('contacts'),
   companies: createCrudEndpoints('companies'),
 
   //Meta Data
@@ -24,8 +25,8 @@ export const admin = {
   ownerships: createCrudEndpoints('ownerships'),
   companySizes: createCrudEndpoints('company-sizes'),
   sourceTypes: createCrudEndpoints('sources'),
+  units: createCrudEndpoints('units'),
 
-  
   //clients: createCrudEndpoints('clients'),
   quotations: createCrudEndpoints('quotations'),
   invoices: createCrudEndpoints('invoices'),
@@ -39,12 +40,12 @@ export const admin = {
   purchaseOrders: createCrudEndpoints('purchase-orders'),
   debitNotes: createCrudEndpoints('debit-notes'),
   accountGroups: createCrudEndpoints('account-groups'),
-  
+
   chartOfAccounts: createCrudEndpoints('chart-of-accounts'),
 
   voucherBooks: createCrudEndpoints('voucher-books'),
-  
-  
+
+
   paymentAccounts: createCrudEndpoints('payment-accounts'),
   bankAccounts: createCrudEndpoints('bank-accounts'),
   systemUsers: createCrudEndpoints('system-users'),

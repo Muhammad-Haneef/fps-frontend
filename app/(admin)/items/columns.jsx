@@ -22,8 +22,8 @@ export const Columns = [
     accessorKey: "original_image",
   },
   {
-    header: "Item",
-    accessorKey: "item",
+    header: "Item Name",
+    accessorKey: "title",
   },
   {
     header: "Item Type",

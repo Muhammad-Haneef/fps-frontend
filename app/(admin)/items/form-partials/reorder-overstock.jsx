@@ -21,8 +21,8 @@ export default function ReorderOverstock() {
       <div className="flex flex-col gap-2">
         <span className="text-sm font-semibold">Item Level Stock</span>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <NumberInput name="reorderPoint" label="Reordering Point" />
-          <NumberInput name="overstockPoint" label="Overstock Point" />
+          <NumberInput name="reordering_point" label="Reordering Point" />
+          <NumberInput name="overstock_point" label="Overstock Point" />
         </div>
       </div>
 
@@ -31,17 +31,17 @@ export default function ReorderOverstock() {
         {warehouseReorderArray.fields.map((f, index) => (
           <div key={f.id} className="grid grid-cols-1 sm:grid-cols-[1fr_1fr_1fr_auto] gap-4 items-end">
             <SelectInput
-              name={`warehouseReorder.${index}.warehouse`}
+              name={`warehouseReorder.${index}.warehouse_id`}
               label={index === 0 ? "Warehouse" : undefined}
               placeholder="Select a Warehouse"
               options={WAREHOUSE_OPTIONS}
             />
             <NumberInput
-              name={`warehouseReorder.${index}.reorderPoint`}
+              name={`warehouseReorder.${index}.reordering_point`}
               label={index === 0 ? "Reordering Point" : undefined}
             />
             <NumberInput
-              name={`warehouseReorder.${index}.overstockPoint`}
+              name={`warehouseReorder.${index}.overstock_point`}
               label={index === 0 ? "Overstock Point" : undefined}
             />
             <Button
@@ -60,7 +60,7 @@ export default function ReorderOverstock() {
             label="Add Warehouse"
             active={false}
             onClick={() =>
-              warehouseReorderArray.append({ warehouse: "", reorderPoint: "2", overstockPoint: "5" })
+              warehouseReorderArray.append({ warehouse_id: "", reordering_point: "2", overstock_point: "5" })
             }
           />
         </div>

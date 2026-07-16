@@ -8,36 +8,21 @@ import { toast } from "sonner";
 
 
 // Components
-
 import FormProvider from "@/components/form/form-provider";
 import FormSkeleton from "@/components/skeletons/form";
 import FormCard from "@/components/form/card";
 import Accordion from "@/components/accordion";
-import AddressFields from "@/components/lookups/address-fields";
-import SocialFields from "@/components/lookups/social-fields";
 
 // Form Partials
-// import BasicInfo from "./form-partials/basic";
-// import Details from "./form-partials/details";
-// import Tax from "./form-partials/tax";
-import { Schema, FormValues } from "./form-partials/schema-values";
-
-// Form Partials
-import { itemSchema, defaultValues } from "./form-partials/schema";
+import { Schema, FormValues } from "./form-partials/schema";
 import Details from "./form-partials/details";
 import Accounts from "./form-partials/accounts";
 import PricingTax from "./form-partials/pricing-tax";
 import Stock from "./form-partials/stock";
 import ReorderOverstock from "./form-partials/reorder-overstock";
 
-
-
-
+// Store
 import { useItemStore } from "@/stores/useItemStore";
-
-
-
-
 
 export function ModuleForm() {
   const { id } = useParams();
@@ -134,6 +119,9 @@ export function ModuleForm() {
     return <FormSkeleton rows={10} columns={2} />;
   }
 
+  console.log("errors 122")
+  console.log(errors)
+
   return (
     <FormProvider
       methods={methods}
@@ -141,7 +129,7 @@ export function ModuleForm() {
       className="w-full space-y-4"
     >
       <FormCard title="" formState={isSubmitting}>
-        <Accordion items={items} defaultValue={["basic"]} />
+        <Accordion items={items} defaultValue={["section1"]} />
       </FormCard>
     </FormProvider>
   );

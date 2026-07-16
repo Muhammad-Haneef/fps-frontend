@@ -1,110 +1,148 @@
-import * as z from "zod";
+
+import { z } from "zod";
 
 /* ------------------------------------------------------------------ */
 /* Validation schema                                                   */
 /* ------------------------------------------------------------------ */
-
-export const itemSchema = z.object({
-  itemType: z.string().default("product"),
-  category: z.string().optional(),
-  sellableToCustomers: z.boolean().optional(),
-  manageStock: z.boolean().optional(),
-  itemImages: z.array(z.any()).optional(),
-  itemOriginalImages: z.array(z.any()).optional(),
-  itemName: z.string().min(2, "Item name must be at least 2 characters"),
-  skuId: z.string().optional(),
-  unit: z.string().optional(),
-
+export const Schema = z.object({
+  // Basic Information
+  product_type: z.string().optional(),
+  category_id: z.string().optional(),
+  saleable: z.string().optional(),
+  manage_stock: z.string().optional(),
+  thumbnail: z.any().optional(),
+  images: z.array(z.any()).optional(),
+  title: z.string().min(2, "Title must be at least 2 characters"),
+  sku: z.string().optional(),
+  qty_unit_id: z.string().optional(),
   description: z.string().optional(),
-  tags: z.array(z.string()).optional(),
-  vendorName: z.string().optional(),
-  vendorCode: z.string().optional(),
-  dimLength: z.string().optional(),
-  dimWidth: z.string().optional(),
-  dimHeight: z.string().optional(),
-  weightValue: z.string().optional(),
-  customFields: z
-    .array(z.object({ key: z.string().optional(), value: z.string().optional() }))
+
+  // Vendors & Tags
+  registered_verdors: z.array(z.string()).optional(),
+  prefered_verdors: z.array(z.string()).optional(),
+  tag_ids: z.array(z.string()).optional(),
+
+  // Dimensions
+  length: z.string().optional(),
+  width: z.string().optional(),
+  height: z.string().optional(),
+  dimension_unit_id: z.string().optional(),
+
+  // Weight
+  gross_weight: z.string().optional(),
+  net_weight: z.string().optional(),
+  weight_unit_id: z.string().optional(),
+
+  // Custom Fields
+  custom_fields: z
+    .array(
+      z.object({
+        key: z.string().optional(),
+        value: z.string().optional(),
+      })
+    )
     .optional(),
 
-  purchaseLedger: z.string().optional(),
-  salesLedger: z.string().optional(),
-  inventoryLedger: z.string().optional(),
+  // Pricing
+  buying_price: z.string().optional(),
+  selling_price: z.string().optional(),
+  landed_cost: z.string().optional(),
+  tax_rate: z.string().optional(),
 
-  currency: z.string().default("PKR"),
-  currencyFormat: z
-    .object({ decimalPlaces: z.string(), separator: z.string(), symbolPosition: z.string() })
+  // Reorder Levels
+  reordering_point: z.string().optional(),
+  overstock_point: z.string().optional(),
+  warehouseReorder: z
+    .array(
+      z.object({
+        warehouse_id: z.string().optional(),
+        reordering_point: z.string().optional(),
+        overstock_point: z.string().optional(),
+      })
+    )
     .optional(),
-  buyingPrice: z.string().optional(),
-  sellingPrice: z.string().optional(),
-  landedCost: z.string().optional(),
-  taxRate: z.string().optional(),
-  priceInclusiveOfTaxes: z.boolean().optional(),
 
-  strictControl: z.boolean().optional(),
-  initialStock: z.string().optional(),
-  trackingMethod: z.string().default("none"),
+  // Stock
+  strick_stock_control: z.string().optional(),
+  initial_stock: z.string().optional(),
+  tracking_method: z.string().optional(),
   warehouseStock: z
     .array(
       z.object({
-        warehouse: z.string().min(1, "Warehouse is required"),
+        warehouse_id: z.string().optional(),
         stock: z.string().optional(),
       })
     )
     .optional(),
 
-  reorderPoint: z.string().optional(),
-  overstockPoint: z.string().optional(),
-  warehouseReorder: z
-    .array(
-      z.object({
-        warehouse: z.string().min(1, "Warehouse is required"),
-        reorderPoint: z.string().optional(),
-        overstockPoint: z.string().optional(),
-      })
-    )
-    .optional(),
+  // Ledgers
+  purchase_ledger_id: z.string().optional(),
+  sale_ledger_id: z.string().optional(),
+  inventory_ledger_id: z.string().optional(),
 });
 
-export const defaultValues = {
-  itemType: "product",
-  category: "",
-  sellableToCustomers: false,
-  manageStock: false,
-  itemImages: [],
-  itemOriginalImages: [],
-  itemName: "",
-  skuId: `${Date.now()}`,
-  unit: "",
+export const FormValues = (record = {}) => ({
+  // Basic Information
+  product_type: record?.product_type ?? "product",
+  category_id: record?.category_id ?? "",
+  saleable: String(record?.saleable) ?? false,
+  manage_stock: String(record?.manage_stock) ?? false,
+  thumbnail: record?.thumbnail ?? null,
+  images: record?.images ?? [],
+  title: record?.title ?? "",
+  sku: record?.sku ?? `${Date.now()}`,
+  qty_unit_id: record?.qty_unit_id ?? "",
+  description: record?.description ?? "",
 
-  description: "",
-  tags: [],
-  vendorName: "",
-  vendorCode: "",
-  dimLength: "",
-  dimWidth: "",
-  dimHeight: "",
-  weightValue: "",
-  customFields: [],
+  // Vendors & Tags
+  registered_verdors: record?.registered_verdors ?? [],
+  prefered_verdors: record?.prefered_verdors ?? [],
+  tag_ids: record?.tag_ids ?? [],
 
-  purchaseLedger: "",
-  salesLedger: "",
-  inventoryLedger: "",
+  // Dimensions
+  length: record?.length ?? "",
+  width: record?.width ?? "",
+  height: record?.height ?? "",
+  dimension_unit_id: record?.dimension_unit_id ?? "",
 
-  currency: "PKR",
-  currencyFormat: { decimalPlaces: "2", separator: "comma", symbolPosition: "before" },
-  buyingPrice: "",
-  sellingPrice: "",
-  landedCost: "",
-  taxRate: "",
-  priceInclusiveOfTaxes: false,
+  // Weight
+  gross_weight: record?.gross_weight ?? "",
+  net_weight: record?.net_weight ?? "",
+  weight_unit_id: record?.weight_unit_id ?? "",
 
-  strictControl: false,
-  initialStock: "",
-  trackingMethod: "none",
-  warehouseStock: [{ warehouse: "", stock: "0" }],
+  // Custom Fields
+  custom_fields: record?.custom_fields ?? [],
 
-  reorderPoint: "2",
-  overstockPoint: "5",
-  warehouseReorder: [{ warehouse: "", reorderPoint: "2", overstockPoint: "5" }],
-};
+  // Pricing
+  buying_price: record?.buying_price ?? "",
+  selling_price: record?.selling_price ?? "",
+  landed_cost: record?.landed_cost ?? "",
+  tax_rate: record?.tax_rate ?? "",
+
+  // Reorder Levels
+  reordering_point: String(record?.reordering_point) ?? "2",
+  overstock_point: String(record?.overstock_point) ?? "5",
+  warehouseReorder: record?.warehouseReorder ?? [
+    {
+      warehouse_id: "",
+      reordering_point: "2",
+      overstock_point: "5",
+    },
+  ],
+
+  // Stock
+  strick_stock_control: String(record?.strick_stock_control) ?? "0",
+  initial_stock: record?.initial_stock ?? "",
+  tracking_method: record?.tracking_method ?? "none",
+  warehouseStock: record?.warehouseStock ?? [
+    {
+      warehouse_id: "",
+      stock: "0",
+    },
+  ],
+
+  // Ledgers
+  purchase_ledger_id: record?.purchase_ledger_id ?? "",
+  sale_ledger_id: record?.sale_ledger_id ?? "",
+  inventory_ledger_id: record?.inventory_ledger_id ?? "",
+});

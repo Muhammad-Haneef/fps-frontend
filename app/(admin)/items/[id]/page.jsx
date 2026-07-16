@@ -4,13 +4,13 @@ import { use, useEffect } from "react";
 import { ModuleForm } from "../module-form";
 import { PageHeader } from "@/components/layouts/admin/page-header";
 import BackButton from "@/components/form/back-button";
-import { useContactStore } from "@/stores/useContactStore";
+import { useItemStore } from "@/stores/useItemStore";
 
 export default function Page({ params }) {
   const { id } = use(params);
   const isNew = id === "add";
 
-  const getRecord = useContactStore((s) => s.getRecord);
+  const getRecord = useItemStore((s) => s.getRecord);
 
   useEffect(() => {
     if (!isNew) getRecord(id);
@@ -19,11 +19,11 @@ export default function Page({ params }) {
   return (
     <div className="space-y-6">
       <PageHeader
-        
+
         description={
           isNew
-            ? "Create a new storage location."
-            : `Edit your warehouse details.`
+            ? "Create a new item."
+            : `Edit your item details.`
         }
         actions={<BackButton />}
       />
