@@ -21,7 +21,7 @@ function ImageUploadBase({
   is_required,
   className,
   accept = "image/*",
-  maxSize = 5 * 1024 * 1024, // 5MB
+  maxSize = 5 * 1024 * 1024,
   aspectRatio = "square",
   showPreview = true,
   allowZoom = true,
@@ -42,7 +42,6 @@ function ImageUploadBase({
     auto: "",
   };
 
-  // Process the selected file
   const processFile = useCallback(
     (file) => {
       setImageError(null);
@@ -83,7 +82,6 @@ function ImageUploadBase({
     }
   }, [onChange]);
 
-  // Drag & drop handlers
   const handleDrag = useCallback((e) => {
     e.preventDefault();
     e.stopPropagation();
@@ -123,11 +121,10 @@ function ImageUploadBase({
       )}
 
       {value ? (
-        /* ---------- PREVIEW STATE ---------- */
         <div className="space-y-2">
           <div
             className={cn(
-              "relative rounded-lg overflow-hidden border-2 border-border group cursor-pointer",
+              "relative rounded-lg overflow-hidden border-2 border-border group max-w-[200px]",
               aspectRatioClasses[aspectRatio] || "aspect-square"
             )}
           >
@@ -136,7 +133,7 @@ function ImageUploadBase({
               alt="Preview"
               className="w-full h-full object-cover"
             />
-            <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+            <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-1.5">
               {allowZoom && (
                 <Button
                   type="button"
@@ -146,25 +143,24 @@ function ImageUploadBase({
                     e.stopPropagation();
                     setIsZoomed(true);
                   }}
-                  className="h-8 w-8"
+                  className="h-7 w-7"
                 >
-                  <ZoomIn className="w-4 h-4" />
+                  <ZoomIn className="w-3.5 h-3.5" />
                 </Button>
               )}
-              <Button
+              {/* <Button
                 type="button"
                 size="icon"
                 variant="secondary"
                 onClick={(e) => {
                   e.stopPropagation();
-                  // Direct click works because input is not display:none
                   fileInputRef.current?.click();
                 }}
                 disabled={disabled}
-                className="h-8 w-8"
+                className="h-7 w-7"
               >
-                <Edit2 className="w-4 h-4" />
-              </Button>
+                <Edit2 className="w-3.5 h-3.5" />
+              </Button> */}
               <Button
                 type="button"
                 size="icon"
@@ -174,33 +170,21 @@ function ImageUploadBase({
                   handleRemove();
                 }}
                 disabled={disabled}
-                className="h-8 w-8"
+                className="h-7 w-7 bg-white"
               >
-                <X className="w-4 h-4" />
+                <X className="w-3.5 h-3.5" />
               </Button>
             </div>
           </div>
         </div>
       ) : (
-        /* ---------- EMPTY DROP ZONE (label triggers hidden input) ---------- */
-        <label
-          htmlFor={inputId}
+        <div
           onDragEnter={handleDrag}
           onDragLeave={handleDrag}
           onDragOver={handleDrag}
           onDrop={handleDrop}
-          tabIndex={disabled ? -1 : 0}
-          onKeyDown={(e) => {
-            if (disabled) return;
-            if (e.key === "Enter" || e.key === " ") {
-              e.preventDefault();
-              // Label's default behavior will open file dialog
-              fileInputRef.current?.click();
-            }
-          }}
           className={cn(
-            "relative flex flex-col items-center justify-center rounded-lg border-2 border-dashed transition-all cursor-pointer",
-            aspectRatioClasses[aspectRatio] || "aspect-square",
+            "relative flex flex-col items-center justify-center rounded-lg border-2 border-dashed transition-all py-6 px-4",
             isDragging
               ? "border-primary bg-primary/5"
               : "border-border hover:border-primary/50 hover:bg-muted/30",
@@ -208,49 +192,45 @@ function ImageUploadBase({
             disabled && "opacity-50 cursor-not-allowed pointer-events-none"
           )}
         >
+          <input
+            ref={fileInputRef}
+            id={inputId}
+            type="file"
+            accept={accept}
+            disabled={disabled}
+            onChange={(e) => {
+              handleFiles(e.target.files);
+              e.target.value = "";
+            }}
+            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+            {...props}
+          />
           <Upload
             className={cn(
-              "w-10 h-10 mb-2",
+              "w-6 h-6 mb-1.5 pointer-events-none",
               isDragging ? "text-primary" : "text-muted-foreground"
             )}
           />
-          <p className="text-sm font-medium text-foreground mb-1">
+          <p className="text-xs font-medium text-foreground mb-0.5 pointer-events-none">
             {isDragging ? "Drop image here" : "Click to upload or drag & drop"}
           </p>
-          <p className="text-xs text-muted-foreground">
+          <p className="text-[10px] text-muted-foreground pointer-events-none">
             {accept} • Max {(maxSize / (1024 * 1024)).toFixed(1)}MB
           </p>
-        </label>
+        </div>
       )}
-
-      {/* HIDDEN FILE INPUT – now not display:none, so it works everywhere */}
-      <input
-        ref={fileInputRef}
-        id={inputId}
-        type="file"
-        accept={accept}
-        disabled={disabled}
-        className="absolute w-0 h-0 opacity-0 overflow-hidden"
-        onChange={(e) => {
-          handleFiles(e.target.files);
-          e.target.value = ""; // allow re-uploading the same file
-        }}
-        aria-hidden="true"
-        {...props}
-      />
 
       {(helperText || displayError) && (
         <p
           className={cn(
             "text-xs",
-            displayError ? "text-destructive" : "text-muted-foreground"
+            displayError ? "text-destructive font-medium" : "text-muted-foreground"
           )}
         >
           {displayError || helperText}
         </p>
       )}
 
-      {/* Zoom Modal */}
       {allowZoom && value && (
         <Dialog open={isZoomed} onOpenChange={setIsZoomed}>
           <DialogContent className="max-w-4xl">

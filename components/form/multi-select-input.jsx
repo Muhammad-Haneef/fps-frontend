@@ -23,16 +23,16 @@ function MultiSelectInputBase({
 
   const normalizedOptions = useMemo(() => Array.isArray(options) ? options : [], [options]);
   const selectedValues = useMemo(() => Array.isArray(value) ? value.map(v => String(v)) : [], [value]);
-  const selectedItems = useMemo(() => normalizedOptions.filter((opt) => selectedValues.includes(String(opt.value))), [selectedValues, normalizedOptions]);
+  const selectedItems = useMemo(() => normalizedOptions.filter((opt) => selectedValues.includes(String(opt.id))), [selectedValues, normalizedOptions]);
   const filteredOptions = useMemo(() => {
-    const unselected = normalizedOptions.filter((opt) => !selectedValues.includes(String(opt.value)));
+    const unselected = normalizedOptions.filter((opt) => !selectedValues.includes(String(opt.id)));
     if (!searchTerm) return unselected;
-    return unselected.filter((opt) => String(opt.label).toLowerCase().includes(searchTerm.toLowerCase()));
+    return unselected.filter((opt) => String(opt.title).toLowerCase().includes(searchTerm.toLowerCase()));
   }, [searchTerm, normalizedOptions, selectedValues]);
 
   const handleSelect = (option) => {
     if (disabled || loading) return;
-    const newValue = [...selectedValues, String(option.value)];
+    const newValue = [...selectedValues, String(option.id)];
     if (onChange) onChange(newValue);
     setSearchTerm("");
   };
@@ -65,7 +65,7 @@ function MultiSelectInputBase({
     <div className={cn("w-full flex flex-col gap-1.5", className)} dir={dir}>
       {label && (
         <div className="flex items-center gap-1.5">
-          <Label htmlFor={inputId} className={cn("text-xs font-semibold tracking-wider text-muted-foreground", displayError && "text-destructive", disabled && "opacity-50")}>
+          <Label htmlFor={inputId} className={cn("text-xs font-semibold uppercase tracking-wider text-muted-foreground", displayError && "text-destructive", disabled && "opacity-50")}>
             {label}{is_required && <span className="text-destructive ml-1">*</span>}
           </Label>
           {tooltip && (
@@ -93,11 +93,11 @@ function MultiSelectInputBase({
           >
             <div className="flex flex-wrap gap-1 items-center flex-1 overflow-hidden">
               {selectedItems.map((item) => (
-                <Badge key={item.value} variant="secondary" className="flex items-center gap-1 text-xs pl-2 pr-1 py-0.5 rounded-md font-medium">
+                <Badge key={item.id} variant="secondary" className="flex items-center gap-1 text-xs pl-2 pr-1 py-0.5 rounded-md font-medium">
                   {item.icon && <span className="shrink-0">{item.icon}</span>}
-                  <span className="truncate max-w-[120px]">{item.label}</span>
+                  <span className="truncate max-w-[120px]">{item.title}</span>
                   {!disabled && (
-                    <span onClick={(e) => handleRemove(item.value, e)} className="rounded p-0.5 hover:bg-muted-foreground/20 text-muted-foreground hover:text-foreground cursor-pointer shrink-0">
+                    <span onClick={(e) => handleRemove(item.id, e)} className="rounded p-0.5 hover:bg-muted-foreground/20 text-muted-foreground hover:text-foreground cursor-pointer shrink-0">
                       <X className="h-3 w-3" />
                     </span>
                   )}
@@ -135,14 +135,14 @@ function MultiSelectInputBase({
                   ) : "No options available"}
                 </div>
               ) : filteredOptions.map((option) => (
-                <div key={option.value} onClick={() => !option.disabled && handleSelect(option)}
+                <div key={option.id} onClick={() => !option.disabled && handleSelect(option)}
                   className={cn(
                     "relative flex items-center gap-2 px-3 py-2 text-sm cursor-pointer select-none transition-colors",
                     option.disabled ? "text-muted-foreground opacity-50 cursor-not-allowed" : "hover:bg-accent hover:text-accent-foreground"
                   )}
                 >
                   {option.icon && <span className="shrink-0">{option.icon}</span>}
-                  <span className="truncate">{option.label}</span>
+                  <span className="truncate">{option.title}</span>
                 </div>
               ))}
             </div>

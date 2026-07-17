@@ -25,7 +25,7 @@ function RadioInputBase({
     <div className={cn("w-full flex flex-col gap-2", className)} dir={dir}>
       {label && (
         <div className="flex items-center gap-1.5">
-          <Label className={cn("text-xs font-semibold tracking-wider text-muted-foreground", error && "text-destructive", disabled && "opacity-50")}>
+          <Label className={cn("text-xs font-semibold uppercase tracking-wider text-muted-foreground", error && "text-destructive", disabled && "opacity-50")}>
             {label}{is_required && <span className="text-destructive ml-1">*</span>}
           </Label>
           {tooltip && (
@@ -50,22 +50,22 @@ function RadioInputBase({
       >
         {options.map((option, index) => {
           const optionId = `${inputId}-option-${index}`;
-          const isSelected = String(value) === String(option.value);
+          const isSelected = String(value) === String(option.id);
 
           if (layout === "card") {
             return (
-              <div key={option.value}
-                onClick={() => !disabled && !option.disabled && handleValueChange(option.value)}
+              <div key={option.id}
+                onClick={() => !disabled && !option.disabled && handleValueChange(option.id)}
                 className={cn(
                   "flex items-start gap-3 p-3 rounded-lg border border-input bg-background hover:bg-accent/40 cursor-pointer transition-all select-none",
                   isSelected && "border-primary ring-2 ring-primary/20",
                   (disabled || option.disabled) && "opacity-50 cursor-not-allowed pointer-events-none"
                 )}
               >
-                <RadioGroupItem value={String(option.value)} id={optionId} className="mt-0.5" disabled={disabled || option.disabled} />
+                <RadioGroupItem value={String(option.id)} id={optionId} className="mt-0.5" disabled={disabled || option.disabled} />
                 <div className="flex flex-col gap-0.5">
                   <Label htmlFor={optionId} className={cn("font-semibold text-sm cursor-pointer", isSelected ? "text-primary" : "text-foreground")}>
-                    {option.icon && <span className="inline-block mr-1.5">{option.icon}</span>}{option.label}
+                    {option.icon && <span className="inline-block mr-1.5">{option.icon}</span>}{option.title}
                   </Label>
                   {option.description && <span className="text-xs text-muted-foreground">{option.description}</span>}
                 </div>
@@ -74,10 +74,10 @@ function RadioInputBase({
           }
 
           return (
-            <div key={option.value} className="flex items-center gap-2">
-              <RadioGroupItem value={String(option.value)} id={optionId} disabled={disabled || option.disabled} />
+            <div key={option.id} className="flex items-center gap-2">
+              <RadioGroupItem value={String(option.id)} id={optionId} disabled={disabled || option.disabled} />
               <Label htmlFor={optionId} className={cn("text-sm cursor-pointer select-none", (disabled || option.disabled) && "opacity-50 cursor-not-allowed")}>
-                {option.icon && <span className="inline-block mr-1.5">{option.icon}</span>}{option.label}
+                {option.icon && <span className="inline-block mr-1.5">{option.icon}</span>}{option.title}
               </Label>
             </div>
           );

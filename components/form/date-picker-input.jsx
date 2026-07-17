@@ -58,7 +58,7 @@ function DatePickerInputBase({
     <div className={cn("w-full flex flex-col gap-1.5", className)} dir={dir}>
       {label && (
         <div className="flex items-center gap-1.5">
-          <Label htmlFor={inputId} className={cn("text-xs font-semibold tracking-wider text-muted-foreground", displayError && "text-destructive", disabled && "opacity-50")}>
+          <Label htmlFor={inputId} className={cn("text-xs font-semibold uppercase tracking-wider text-muted-foreground", displayError && "text-destructive", disabled && "opacity-50")}>
             {label}{is_required && <span className="text-destructive ml-1">*</span>}
           </Label>
           {tooltip && (

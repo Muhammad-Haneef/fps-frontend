@@ -1,12 +1,15 @@
 "use client";
 
+import { useState, useEffect } from "react";
+
 import { useFormContext, useFieldArray } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Trash2 } from "lucide-react";
 
 import { NumberInput, SelectInput } from "@/components/form";
-import { Section, ToggleAddLink } from "./FormHelpers";
-import { WAREHOUSE_OPTIONS } from "./formConstants";
+import { ToggleAddLink } from "./FormHelpers";
+
+import { useWarehouseStore } from "@/stores/useWarehouseStore"
 
 /* ------------------------------------------------------------------ */
 /* 5. Reorder & Overstock                                              */
@@ -15,6 +18,15 @@ import { WAREHOUSE_OPTIONS } from "./formConstants";
 export default function ReorderOverstock() {
   const { control } = useFormContext();
   const warehouseReorderArray = useFieldArray({ control, name: "warehouseReorder" });
+
+  const getWarehouses = useWarehouseStore((s) => s.getForDropdown);
+  const warehouses = useWarehouseStore((s) => s.forDropdown);
+  const warehouseLoading = useWarehouseStore((s) => s.loading);
+
+  useEffect(() => {
+    getWarehouses();
+  }, [getWarehouses]);
+
 
   return (
     <div className="space-y-4">
@@ -34,7 +46,8 @@ export default function ReorderOverstock() {
               name={`warehouseReorder.${index}.warehouse_id`}
               label={index === 0 ? "Warehouse" : undefined}
               placeholder="Select a Warehouse"
-              options={WAREHOUSE_OPTIONS}
+              loading={warehouseLoading}
+              options={warehouses}
             />
             <NumberInput
               name={`warehouseReorder.${index}.reordering_point`}

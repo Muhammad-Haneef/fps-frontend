@@ -48,14 +48,14 @@ function RadioCardsBase({
 
       <div className={cn("grid gap-3", gridClasses[columns])}>
         {options.map((option) => {
-          const isSelected = value === option.value;
+          const isSelected = value === option.id;
           const isDisabled = disabled || option.disabled;
 
           return (
             <button
-              key={option.value}
+              key={option.id}
               type="button"
-              onClick={() => handleSelect(option.value)}
+              onClick={() => handleSelect(option.id)}
               disabled={isDisabled}
               className={cn(
                 "relative flex items-start gap-3 rounded-lg border-2 p-4 text-left transition-all",
@@ -79,7 +79,7 @@ function RadioCardsBase({
 
               {/* Content */}
               <div className="flex-1 min-w-0">
-                <div className="font-medium text-sm mb-1">{option.label}</div>
+                <div className="font-medium text-sm mb-1">{option.title}</div>
                 {showDescription && option.description && (
                   <div className="text-xs text-muted-foreground">{option.description}</div>
                 )}

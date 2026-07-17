@@ -60,20 +60,86 @@ function SwitchInputBase({
   );
 }
 
-export default function SwitchInput({ name, ...props }) {
+function SwitchInputGroup({
+  title, options = [], value = [], onChange, disabled, error, helperText,
+  is_required, showStatusLabel, statusLabels, className, ...props
+}) {
+  const handleToggle = (optionId) => {
+    if (disabled) return;
+    const isSelected = value.includes(optionId);
+    const newValue = isSelected
+      ? value.filter((v) => v !== optionId)
+      : [...value, optionId];
+    onChange?.(newValue);
+  };
+
+  return (
+    <div className={cn("flex flex-col gap-2", className)}>
+      {title && (
+        <Label className={cn("text-sm font-medium", error && "text-destructive", disabled && "opacity-50")}>
+          {title}
+          {is_required && <span className="text-destructive ml-1">*</span>}
+        </Label>
+      )}
+      <div className="space-y-1">
+        {options.map((option) => {
+          const optionChecked = value.includes(option.id);
+          return (
+            <SwitchInputBase
+              key={option.id}
+              label={option.title}
+              icon={option.icon}
+              checked={optionChecked}
+              onChange={() => handleToggle(option.id)}
+              disabled={disabled || option.disabled}
+              showStatusLabel={showStatusLabel}
+              statusLabels={statusLabels}
+              {...props}
+            />
+          );
+        })}
+      </div>
+      {(helperText || error) && (
+        <div className="text-[11px] px-0.5">
+          {error ? <span className="text-destructive font-medium">{error}</span>
+            : <span className="text-muted-foreground">{helperText}</span>}
+        </div>
+      )}
+    </div>
+  );
+}
+
+export default function SwitchInput({ name, options, ...props }) {
   const formContext = useFormContext();
+
+  if (options) {
+    if (formContext && name) {
+      return (
+        <Controller name={name} control={formContext.control}
+          render={({ field, fieldState: { error } }) => (
+            <SwitchInputGroup
+              options={options}
+              error={error?.message || props.error}
+              {...field}
+              {...props}
+            />
+          )}
+        />
+      );
+    }
+    return <SwitchInputGroup options={options} {...props} />;
+  }
+
   if (formContext && name) {
     return (
       <Controller name={name} control={formContext.control}
         render={({ field, fieldState: { error } }) => (
-          <SwitchInputBase {...field}
-            checked={field.value === 1 || field.value === true}
-            onChange={(checked) => {
-              const currentType = typeof field.value;
-              if (currentType === "number") { field.onChange(checked ? 1 : 0); }
-              else { field.onChange(checked); }
-            }}
-            error={error?.message || props.error} {...props}
+          <SwitchInputBase
+            {...field}
+            checked={field.value === 1}
+            onChange={(checked) => field.onChange(checked ? 1 : 0)}
+            error={error?.message || props.error}
+            {...props}
           />
         )}
       />

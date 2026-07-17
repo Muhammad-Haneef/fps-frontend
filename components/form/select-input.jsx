@@ -14,7 +14,10 @@ function SelectInputBase({
   label, icon: IconComponent, error, helperText, tooltip,
   disabled, loading = false, placeholder = "Select an option...", options = [],
   value, onChange, onBlur, id, is_required, clearable = true, searchable = true,
-  onCreate, optionEnd, dir = "ltr", className, ...props
+  onCreate, optionEnd, dir = "ltr", className,
+  valueKey = "id",      // 👈 new prop
+  labelKey = "title",
+  ...props
 }) {
   const generatedId = useId();
   const inputId = id || generatedId;
@@ -22,15 +25,17 @@ function SelectInputBase({
   const [searchTerm, setSearchTerm] = useState("");
 
   const normalizedOptions = useMemo(() => Array.isArray(options) ? options : [], [options]);
-  const selectedOption = useMemo(() => normalizedOptions.find((opt) => String(opt.value) === String(value)), [value, normalizedOptions]);
+
+  const selectedOption = useMemo(() => normalizedOptions.find((opt) => String(opt[valueKey]) === String(value)), [value, normalizedOptions]);
+
   const filteredOptions = useMemo(() => {
     if (!searchTerm) return normalizedOptions;
-    return normalizedOptions.filter((opt) => String(opt.label).toLowerCase().includes(searchTerm.toLowerCase()));
+    return normalizedOptions.filter((opt) => String(opt[labelKey]).toLowerCase().includes(searchTerm.toLowerCase()));
   }, [searchTerm, normalizedOptions]);
 
   const handleSelect = (option) => {
     if (disabled || loading) return;
-    if (onChange) onChange(option.value);
+    if (onChange) onChange(option[valueKey]);
     setIsOpen(false);
     setSearchTerm("");
   };
@@ -57,7 +62,7 @@ function SelectInputBase({
     <div className={cn("w-full flex flex-col gap-1.5", className)} dir={dir}>
       {label && (
         <div className="flex items-center gap-1.5">
-          <Label htmlFor={inputId} className={cn("text-xs font-semibold tracking-wider text-muted-foreground", displayError && "text-destructive", disabled && "opacity-50")}>
+          <Label htmlFor={inputId} className={cn("text-xs font-semibold uppercase tracking-wider text-muted-foreground", displayError && "text-destructive", disabled && "opacity-50")}>
             {label}{is_required && <span className="text-destructive ml-1">*</span>}
           </Label>
           {tooltip && (
@@ -85,7 +90,7 @@ function SelectInputBase({
           >
             <div className="flex items-center gap-2 overflow-hidden truncate">
               {IconComponent && !isRTL && <IconComponent className="h-4 w-4 shrink-0 text-muted-foreground" />}
-              <span className="truncate">{selectedOption ? selectedOption.label : placeholder}</span>
+              <span className="truncate">{selectedOption ? selectedOption[labelKey] : placeholder}</span>
             </div>
             <div className="flex items-center gap-1 shrink-0 ml-auto">
               {loading ? <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" /> : (
@@ -115,9 +120,9 @@ function SelectInputBase({
                   ) : "No options found"}
                 </div>
               ) : filteredOptions.map((option) => {
-                const isSelected = String(option.value) === String(value);
+                const isSelected = String(option[valueKey]) === String(value);
                 return (
-                  <div key={option.value} onClick={() => !option.disabled && handleSelect(option)}
+                  <div key={option[valueKey]} onClick={() => !option.disabled && handleSelect(option)}
                     className={cn(
                       "relative flex items-center justify-between px-3 py-2 text-sm cursor-pointer select-none transition-colors",
                       option.disabled ? "text-muted-foreground opacity-50 cursor-not-allowed" : "hover:bg-accent hover:text-accent-foreground",
@@ -126,7 +131,7 @@ function SelectInputBase({
                   >
                     <div className="flex items-center gap-2 truncate">
                       {option.icon && <span className="shrink-0">{option.icon}</span>}
-                      <span className="truncate">{option.label}</span>
+                      <span className="truncate">{option[labelKey]}</span>
                     </div>
                     <div className="flex items-center gap-2 shrink-0">
                       {optionEnd && optionEnd(option)}

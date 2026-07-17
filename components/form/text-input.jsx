@@ -1,4 +1,4 @@
-"use client";
+// "use client";
 
 import * as React from "react";
 import { useState, useId, useRef, useEffect } from "react";
@@ -26,6 +26,7 @@ const validateInputText = ({
   let isValid = true;
   let errorMessage = "";
 
+  // custom validator
   if (customValidator) {
     const customResult = customValidator(inputValue);
     if (typeof customResult === "string") {
@@ -48,16 +49,19 @@ const validateInputText = ({
       }
     }
 
-    // Allowed characters (letters, numbers, symbols)
-    if (isValid && (allowLetters || allowNumbers || allowedSymbols)) {
+    // *** FIX: only enforce allowed characters if at least one restriction is explicitly set ***
+    const hasAllowedRestriction =
+      allowLetters === true || allowNumbers === true || !!allowedSymbols;
+
+    if (isValid && hasAllowedRestriction) {
       const allowedChars = [];
       const allowedParts = [];
 
-      if (allowLetters) {
+      if (allowLetters === true) {
         allowedChars.push("a-zA-Z\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\u0900-\u097F");
         allowedParts.push("letters");
       }
-      if (allowNumbers) {
+      if (allowNumbers === true) {
         allowedChars.push("0-9");
         allowedParts.push("numbers");
       }
@@ -67,16 +71,18 @@ const validateInputText = ({
         allowedParts.push(`symbols: ${allowedSymbols}`);
       }
 
-      const dynamicRegex = new RegExp(`^[${allowedChars.join("")}]*$`);
-      if (!dynamicRegex.test(inputValue)) {
-        isValid = false;
-        if (allowedParts.length === 1) {
-          errorMessage = `Only ${allowedParts[0]} are allowed.`;
-        } else if (allowedParts.length === 2) {
-          errorMessage = `Only ${allowedParts[0]} and ${allowedParts[1]} are allowed.`;
-        } else {
-          const last = allowedParts.pop();
-          errorMessage = `Only ${allowedParts.join(", ")} and ${last} are allowed.`;
+      if (allowedChars.length > 0) {
+        const dynamicRegex = new RegExp(`^[${allowedChars.join("")}]*$`);
+        if (!dynamicRegex.test(inputValue)) {
+          isValid = false;
+          if (allowedParts.length === 1) {
+            errorMessage = `Only ${allowedParts[0]} are allowed.`;
+          } else if (allowedParts.length === 2) {
+            errorMessage = `Only ${allowedParts[0]} and ${allowedParts[1]} are allowed.`;
+          } else {
+            const last = allowedParts.pop();
+            errorMessage = `Only ${allowedParts.join(", ")} and ${last} are allowed.`;
+          }
         }
       }
     }
@@ -99,13 +105,13 @@ const validateInputText = ({
       }
     }
 
-    // Basic number/letter restriction
+    // *** FIX: only block numbers/letters if explicitly set to false ***
     if (isValid) {
-      if (!allowNumbers && /\d/.test(inputValue)) {
+      if (allowNumbers === false && /\d/.test(inputValue)) {
         isValid = false;
         errorMessage = "Numbers are not allowed";
       }
-      if (!allowLetters && /[a-zA-Z]/.test(inputValue)) {
+      if (allowLetters === false && /[a-zA-Z]/.test(inputValue)) {
         isValid = false;
         errorMessage = "Letters are not allowed";
       }
@@ -131,12 +137,13 @@ function TextInputBase({
   onChange,
   onBlur,
   dir = "ltr",
-  allowedPattern = ".*",
+  allowedPattern = "",
   blockedPattern = "",
   allowedSymbols,
   blockedSymbols = "",
-  allowNumbers = true,
-  allowLetters = true,
+  // *** FIX: default to undefined instead of true ***
+  allowNumbers,
+  allowLetters,
   customValidator,
   onValidationError,
   className,
@@ -181,6 +188,7 @@ function TextInputBase({
       if (onValidationError) {
         onValidationError(errorMessage);
       }
+      // revert input display
       if (inputRef.current) {
         inputRef.current.value = internalValue;
       }
@@ -197,7 +205,7 @@ function TextInputBase({
           <Label
             htmlFor={inputId}
             className={cn(
-              "text-xs font-semibold tracking-wider text-muted-foreground transition-colors",
+              "text-xs font-semibold uppercase tracking-wider text-muted-foreground transition-colors",
               displayError && "text-destructive",
               disabled && "opacity-50"
             )}

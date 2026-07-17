@@ -93,9 +93,9 @@ export function ModuleForm() {
       const data = new FormData();
 
       Object.entries(formValues).forEach(([key, value]) => {
-        if (key === "logo") {
+        if (key === "thumbnail") {
           if (value instanceof File) {
-            data.append("logo", value);
+            data.append("thumbnail", value);
           }
         } else {
           data.append(key, value ?? "");

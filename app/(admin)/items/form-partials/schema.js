@@ -6,6 +6,7 @@ import { z } from "zod";
 /* ------------------------------------------------------------------ */
 export const Schema = z.object({
   // Basic Information
+  id: z.number().default(0),
   product_type: z.string().optional(),
   category_id: z.string().optional(),
   saleable: z.string().optional(),
@@ -52,6 +53,7 @@ export const Schema = z.object({
   // Reorder Levels
   reordering_point: z.string().optional(),
   overstock_point: z.string().optional(),
+
   warehouseReorder: z
     .array(
       z.object({
@@ -63,7 +65,7 @@ export const Schema = z.object({
     .optional(),
 
   // Stock
-  strick_stock_control: z.string().optional(),
+  strick_stock_control: z.number().optional(),
   initial_stock: z.string().optional(),
   tracking_method: z.string().optional(),
   warehouseStock: z
@@ -83,14 +85,15 @@ export const Schema = z.object({
 
 export const FormValues = (record = {}) => ({
   // Basic Information
+  id: record?.id ?? 0,
   product_type: record?.product_type ?? "product",
   category_id: record?.category_id ?? "",
-  saleable: String(record?.saleable) ?? false,
-  manage_stock: String(record?.manage_stock) ?? false,
+  saleable: String(record?.saleable ?? "0"),
+  manage_stock: String(record?.manage_stock ?? "0"),
   thumbnail: record?.thumbnail ?? null,
   images: record?.images ?? [],
   title: record?.title ?? "",
-  sku: record?.sku ?? `${Date.now()}`,
+  sku: record?.sku ?? "",
   qty_unit_id: record?.qty_unit_id ?? "",
   description: record?.description ?? "",
 
@@ -120,8 +123,8 @@ export const FormValues = (record = {}) => ({
   tax_rate: record?.tax_rate ?? "",
 
   // Reorder Levels
-  reordering_point: String(record?.reordering_point) ?? "2",
-  overstock_point: String(record?.overstock_point) ?? "5",
+  reordering_point: String(record?.reordering_point ?? "2"),
+  overstock_point: String(record?.overstock_point ?? "5"),
   warehouseReorder: record?.warehouseReorder ?? [
     {
       warehouse_id: "",
@@ -131,8 +134,8 @@ export const FormValues = (record = {}) => ({
   ],
 
   // Stock
-  strick_stock_control: String(record?.strick_stock_control) ?? "0",
-  initial_stock: record?.initial_stock ?? "",
+  strick_stock_control: Number(record?.strick_stock_control ?? 0),
+  initial_stock: record?.initial_stock ?? "0",
   tracking_method: record?.tracking_method ?? "none",
   warehouseStock: record?.warehouseStock ?? [
     {

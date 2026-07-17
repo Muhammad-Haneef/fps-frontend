@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import {toNumberOrBlank} from "@/helper/ClientSide";
+import { toNumberOrBlank } from "@/helper/ClientSide";
 
 export const Schema = z.object({
   id: z.number().default(0),
@@ -22,6 +22,7 @@ export const Schema = z.object({
   map_link: z.string().nullable().optional(),
   dimensions: z.string().nullable().optional(),
 
+  /*
   system_user_id: z.string()
     .min(1, { message: "Please Enter Title" })
     .regex(/^[a-zA-Z0-9 _-]+$/, {
@@ -42,6 +43,12 @@ export const Schema = z.object({
     .regex(/^[a-zA-Z0-9 _-]+$/, {
       message: "Only alphabets and spaces are allowed",
     }),
+    */
+
+  system_user_id: z.number(),
+  country_id: z.number(),
+  state_id: z.number(),
+  city_id: z.number(),
   sort_by: z.coerce.number().nullable().optional(),
   is_default: z.coerce.number().nullable().optional(),
   is_active: z.coerce.number().nullable().optional(),
@@ -52,12 +59,12 @@ export const FormValues = (record = {}) => ({
   title: record?.title ?? "",
   code: record?.code ?? "",
 
-  system_user_id: String(record?.system_user_id ?? ""),
+  system_user_id: record?.system_user_id ?? "",
   contact: record?.contact ?? "",
   address: record?.address ?? "",
-  country_id: String(record?.country_id ?? ""),
-  state_id: String(record?.state_id ?? ""),
-  city_id: String(record?.city_id ?? ""),
+  country_id: record?.country_id ?? "",
+  state_id: record?.state_id ?? "",
+  city_id: record?.city_id ?? "",
   postal_code: record?.postal_code ?? "",
   map_link: record?.map_link ?? "",
   dimensions: record?.dimensions ?? "",

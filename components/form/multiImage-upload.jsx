@@ -1,4 +1,4 @@
-// "use client";
+"use client";
 
 import React, { useState, useRef, useCallback, useId } from "react";
 import { useFormContext, Controller } from "react-hook-form";
@@ -25,7 +25,7 @@ function MultiImageUploadBase({
   maxImages = 10,
   showCount = true,
   allowReorder = true,
-  gridCols = 3,
+  gridCols = 5,
   ...props
 }) {
   const generatedId = useId();
@@ -158,14 +158,69 @@ function MultiImageUploadBase({
         </div>
       )}
 
+      {/* Upload Area – now a label for the file input */}
+      {images.length < maxImages && (
+        <div
+          onDragEnter={handleDrag}
+          onDragLeave={handleDrag}
+          onDragOver={handleDrag}
+          onDrop={handleDrop}
+          className={cn(
+            "relative flex flex-col items-center justify-center rounded-lg border-2 border-dashed transition-all py-5 px-4",
+            isDragging
+              ? "border-primary bg-primary/5"
+              : "border-border hover:border-primary/50 hover:bg-muted/30",
+            displayError && "border-destructive",
+            disabled && "opacity-50 cursor-not-allowed pointer-events-none"
+          )}
+        >
+          <input
+            ref={fileInputRef}
+            id={inputId}
+            type="file"
+            accept={accept}
+            multiple
+            disabled={disabled}
+            onChange={(e) => {
+              const files = Array.from(e.target.files || []);
+              handleFiles(files);
+              e.target.value = "";
+            }}
+            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+            {...props}
+          />
+          <Upload
+            className={cn(
+              "w-5 h-5 mb-1 pointer-events-none",
+              isDragging ? "text-primary" : "text-muted-foreground"
+            )}
+          />
+          <p className="text-xs font-medium text-foreground mb-0.5 pointer-events-none">
+            {isDragging ? "Drop images here" : "Click to upload or drag & drop"}
+          </p>
+          <p className="text-[10px] text-muted-foreground pointer-events-none">
+            {accept} • Max {(maxSize / (1024 * 1024)).toFixed(1)}MB each • {maxImages - images.length} remaining
+          </p>
+        </div>
+      )}
+
+      {(helperText || displayError) && (
+        <p
+          className={cn(
+            "text-xs",
+            displayError ? "text-destructive" : "text-muted-foreground"
+          )}
+        >
+          {displayError || helperText}
+        </p>
+      )}
+
+
       {/* Image Grid */}
       {images.length > 0 && (
         <div
-          className={cn(
-            "grid gap-3 mb-2",
-            // Tailwind JIT may not recognise dynamic grid-cols-*, consider using a style prop for production
-            `grid-cols-${gridCols}`
-          )}
+          //className={cn( "grid gap-2 mb-2", `grid-cols-${gridCols}` )}
+          className={cn("flex flex-wrap", `grid-cols-${gridCols}`)}
         >
           {images.map((img, index) => (
             <div
@@ -175,7 +230,7 @@ function MultiImageUploadBase({
               onDragOver={(e) => handleDragOverReorder(e, index)}
               onDragEnd={handleDragEnd}
               className={cn(
-                "relative aspect-square rounded-lg overflow-hidden border-2 border-border group",
+                "relative aspect-square rounded-md overflow-hidden border border-border m-1 group max-w-[80px]",
                 allowReorder && "cursor-move",
                 draggedIndex === index && "opacity-50"
               )}
@@ -187,8 +242,8 @@ function MultiImageUploadBase({
               />
               <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-1">
                 {allowReorder && (
-                  <div className="absolute top-1 left-1 bg-white/90 rounded p-1">
-                    <MoveHorizontal className="w-3 h-3 text-muted-foreground" />
+                  <div className="absolute top-1 left-1 bg-white/90 rounded p-0.5">
+                    <MoveHorizontal className="w-2.5 h-2.5 text-muted-foreground" />
                   </div>
                 )}
                 <Button
@@ -199,7 +254,7 @@ function MultiImageUploadBase({
                     e.stopPropagation();
                     setZoomedImage(img);
                   }}
-                  className="h-7 w-7"
+                  className="h-6 w-6"
                 >
                   <ZoomIn className="w-3 h-3" />
                 </Button>
@@ -212,87 +267,17 @@ function MultiImageUploadBase({
                     handleRemove(index);
                   }}
                   disabled={disabled}
-                  className="h-7 w-7"
+                  className="h-6 w-6 bg-white"
                 >
                   <X className="w-3 h-3" />
                 </Button>
               </div>
-              <div className="absolute bottom-1 right-1 bg-black/70 text-white text-xs px-1.5 py-0.5 rounded">
+              <div className="absolute bottom-0.5 right-0.5 bg-black/70 text-white text-[9px] px-1 py-0.5 rounded">
                 {index + 1}
               </div>
             </div>
           ))}
         </div>
-      )}
-
-      {/* Upload Area – now a label for the file input */}
-      {images.length < maxImages && (
-        <label
-          htmlFor={inputId}
-          onDragEnter={handleDrag}
-          onDragLeave={handleDrag}
-          onDragOver={handleDrag}
-          onDrop={handleDrop}
-          // Keyboard access
-          tabIndex={disabled ? -1 : 0}
-          onKeyDown={(e) => {
-            if (disabled) return;
-            if (e.key === "Enter" || e.key === " ") {
-              e.preventDefault();
-              fileInputRef.current?.click();
-            }
-          }}
-          className={cn(
-            "relative flex flex-col items-center justify-center rounded-lg border-2 border-dashed transition-all cursor-pointer py-8",
-            isDragging
-              ? "border-primary bg-primary/5"
-              : "border-border hover:border-primary/50 hover:bg-muted/30",
-            displayError && "border-destructive",
-            disabled && "opacity-50 cursor-not-allowed pointer-events-none"
-          )}
-        >
-          <Upload
-            className={cn(
-              "w-8 h-8 mb-2",
-              isDragging ? "text-primary" : "text-muted-foreground"
-            )}
-          />
-          <p className="text-sm font-medium text-foreground mb-1">
-            {isDragging ? "Drop images here" : "Click to upload or drag & drop"}
-          </p>
-          <p className="text-xs text-muted-foreground">
-            {accept} • Max {(maxSize / (1024 * 1024)).toFixed(1)}MB each • {maxImages - images.length} remaining
-          </p>
-        </label>
-      )}
-
-      {/* Hidden file input – NOT display:none, so it can be triggered programmatically */}
-      <input
-        ref={fileInputRef}
-        id={inputId}
-        type="file"
-        accept={accept}
-        multiple
-        disabled={disabled}
-        className="absolute w-0 h-0 opacity-0 overflow-hidden"
-        onChange={(e) => {
-          const files = Array.from(e.target.files || []);
-          handleFiles(files);
-          e.target.value = ""; // allow re-upload of same files
-        }}
-        aria-hidden="true"
-        {...props}
-      />
-
-      {(helperText || displayError) && (
-        <p
-          className={cn(
-            "text-xs",
-            displayError ? "text-destructive" : "text-muted-foreground"
-          )}
-        >
-          {displayError || helperText}
-        </p>
       )}
 
       {/* Zoom Modal */}
