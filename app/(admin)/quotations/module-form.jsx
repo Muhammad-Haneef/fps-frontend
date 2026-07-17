@@ -1,33 +1,22 @@
 "use client";
 
-import Accordion from "@/components/accordion"
 
 export function ModuleForm() {
 
-  const items = [
-    {
-      value: "billing",
-      trigger: "How does billing work?",
-      content:
-        "We offer monthly and annual subscription plans. Billing is charged at the beginning of each cycle, and you can cancel anytime. All plans include automatic backups, 24/7 support, and unlimited team members.",
-    },
-    {
-      value: "security",
-      trigger: "Is my data secure?",
-      content:
-        "Yes. We use end-to-end encryption, SOC 2 Type II compliance, and regular third-party security audits. All data is encrypted at rest and in transit using industry-standard protocols.",
-    },
-    {
-      value: "integration",
-      trigger: "What integrations do you support?",
-      content:
-        "We integrate with 500+ popular tools including Slack, Zapier, Salesforce, HubSpot, and more. You can also build custom integrations using our REST API and webhooks.",
-    },
-  ]
+
 
   return (
-    <>
-      <Accordion items={items} className='border' />
-    </>
+    <div className="border shadow-xs w-full md:w-3/4 mx-auto my-4">
+      <div className="border-b p-4 bg-slate-50">
+        <h5 className="font-semibold text-sm md:text-base text-gray-700">Quotation Form</h5>
+      </div>
+      <div className="p-4 flex flex-col gap-2">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+
+        </div>
+      </div>
+
+    </div>
   );
 }

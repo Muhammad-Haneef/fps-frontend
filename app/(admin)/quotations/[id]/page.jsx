@@ -2,9 +2,9 @@
 
 import { use, useEffect } from "react";
 import { ModuleForm } from "../module-form";
-import { PageHeader } from "@/components/layouts/admin/page-header";
-import BackButton from "@/components/form/back-button";
 import { useWarehouseStore } from "@/stores/useWarehouseStore";
+
+import Stepper from "@/components/steper";
 
 export default function WarehousePage({ params }) {
   const { id } = use(params);
@@ -18,14 +18,12 @@ export default function WarehousePage({ params }) {
 
   return (
     <div className="space-y-6">
-      <PageHeader
-        
-        description={
-          isNew
-            ? "Create a new storage location."
-            : `Edit your warehouse details.`
-        }
-        actions={<BackButton />}
+      <Stepper
+        steps={[
+          { title: "Quotation Details" },
+          { title: "Design & Share" },
+        ]}
+        currentStep={1}
       />
       <ModuleForm />
     </div>
