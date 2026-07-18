@@ -1,7 +1,7 @@
 "use client";
 
 import { use, useEffect } from "react";
-import { ModuleForm } from "../module-form";
+import ModuleForm from "../module-form";
 import { useWarehouseStore } from "@/stores/useWarehouseStore";
 
 import Stepper from "@/components/steper";

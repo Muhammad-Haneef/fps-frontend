@@ -8,8 +8,8 @@ export const Schema = z.object({
 
   // General Information
   logo: z.any().nullable().default(null),
-  industry_id: z.string().default(""),
-  type_id: z.string().default(""),
+  industry_id: z.number().default(0),
+  type_id: z.number().default(0),
   display_name: z.string().default(""),
   code: z.string().default(""),
   email: z
@@ -70,8 +70,8 @@ export const FormValues = (record = {}) => ({
   logo_url: record?.logo ?? "",
 
   title: record?.title ?? "",
-  industry_id: String(record?.industry_id ?? ""),
-  type_id: String(record?.type_id ?? ""),
+  industry_id: Number(record?.industry_id ?? 0),
+  type_id: Number(record?.type_id ?? 0),
   display_name: record?.display_name ?? "",
   code: record?.code ?? "",
   email: record?.email ?? "",
@@ -81,7 +81,7 @@ export const FormValues = (record = {}) => ({
   tax_number: record?.tax_number ?? "",
 
   // Address
-  address: String(record?.address ?? ""),
+  address: record?.address ?? "",
   country_id: String(record?.country_id ?? ""),
   state_id: String(record?.state_id ?? ""),
   city_id: String(record?.city_id ?? ""),
@@ -95,7 +95,7 @@ export const FormValues = (record = {}) => ({
   company_size_id: String(record?.company_size_id ?? ""),
   source_id: String(record?.source_id ?? ""),
   annual_revenue: record?.annual_revenue ?? "",
-  
+
   // Status
   is_active: record?.is_active ?? true,
   sort_by: String(record?.sort_by ?? "0"),
@@ -117,5 +117,5 @@ export const FormValues = (record = {}) => ({
 
   // Account
   create_ledger: record?.create_ledger ?? "yes",
-  chart_of_account_id: record?.chart_of_account_id ?? "",
+  chart_of_account_id: String(record?.chart_of_account_id ?? ""),
 });
