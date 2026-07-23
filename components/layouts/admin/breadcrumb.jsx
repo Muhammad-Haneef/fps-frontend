@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { Home } from "lucide-react";
+import { Suspense } from "react";
 import { usePathname } from "next/navigation";
 
 import {
@@ -13,7 +14,7 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 
-export default function AppBreadcrumb() {
+function AppBreadcrumbContent() {
   const pathname = usePathname();
 
   const segments = pathname.split("/").filter(Boolean);
@@ -67,5 +68,13 @@ export default function AppBreadcrumb() {
         })}
       </BreadcrumbList>
     </Breadcrumb>
+  );
+}
+
+export default function AppBreadcrumb() {
+  return (
+    <Suspense fallback={<div className="h-8 border bg-muted/40" />}>
+      <AppBreadcrumbContent />
+    </Suspense>
   );
 }
