@@ -23,12 +23,12 @@ export default function ContactDetails() {
         <CardTitle>Contact Details</CardTitle>
       </CardHeader>
       <CardContent className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <PhoneInput name="contactDetails.phone" label="Phone" placeholder="+92 21 xxxxxxx" />
-        <PhoneInput name="contactDetails.mobile" label="Mobile" placeholder="+92 3xx xxxxxxx" />
-        <TextInput name="contactDetails.email" label="Email" placeholder="contact@example.com" />
-        <TextInput name="contactDetails.website" label="Website" placeholder="https://example.com" />
+        <PhoneInput name="contact_details.phone" label="Phone" placeholder="+92 21 xxxxxxx" />
+        <PhoneInput name="contact_details.mobile" label="Mobile" placeholder="+92 3xx xxxxxxx" />
+        <TextInput name="contact_details.email" label="Email" placeholder="contact@example.com" />
+        <TextInput name="contact_details.website" label="Website" placeholder="https://example.com" />
         <div className="sm:col-span-2">
-          <TextareaInput name="contactDetails.address" label="Address" rows={2} placeholder="Office address" />
+          <TextareaInput name="contact_details.address" label="Address" rows={2} placeholder="Office address" />
         </div>
       </CardContent>
     </Card>

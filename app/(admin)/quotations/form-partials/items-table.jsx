@@ -77,7 +77,6 @@ export default function ItemsTable() {
             onMoveDown={() => itemsArray.swap(index, index + 1)}
             onDuplicate={() => itemsArray.insert(index + 1, { ...itemsArray.fields[index] })}
             onRemove={() => itemsArray.fields.length > 1 && itemsArray.remove(index)}
-
           />
         ))}
 
@@ -134,8 +133,8 @@ function LineItemRow({ index, symbol, canMoveUp, canMoveDown, onMoveUp, onMoveDo
 
   const { control, setValue } = useFormContext();
   const row = useWatch({ control, name: `items.${index}` });
-  const showDescription = useWatch({ control, name: `items.${index}.showDescription` });
-  const showImages = useWatch({ control, name: `items.${index}.showImages` });
+  const show_description = useWatch({ control, name: `items.${index}.show_description` });
+  const show_images = useWatch({ control, name: `items.${index}.show_images` });
   const collapsed = useWatch({ control, name: `items.${index}.collapsed` });
   const selectedItemId = useWatch({ control, name: `items.${index}.item` });
   const t = lineTotals(row || {});
@@ -145,7 +144,7 @@ function LineItemRow({ index, symbol, canMoveUp, canMoveDown, onMoveUp, onMoveDo
     if (!selectedItemId || !items?.length) return;
 
     const selected = items.find(
-      (i) => String(i.value) === String(selectedItemId)
+      (i) => String(i.id || i.value) === String(selectedItemId)
     );
     if (!selected) return;
 
@@ -153,14 +152,24 @@ function LineItemRow({ index, symbol, canMoveUp, canMoveDown, onMoveUp, onMoveDo
       setValue(`items.${index}.selling_price`, selected.selling_price, { shouldDirty: true });
     }
 
+    const nameVal = selected.title || selected.label || selected.name;
+    if (nameVal) {
+      setValue(`items.${index}.name`, nameVal, { shouldDirty: true });
+    }
+
+    const unitVal = selected.qty_unit_id || selected.qty_unit || selected.unit || selected.unit_id;
+    if (unitVal) {
+      setValue(`items.${index}.qty_unit_id`, String(unitVal), { shouldDirty: true });
+    }
+
     if (selected.description) {
       setValue(`items.${index}.description`, selected.description, { shouldDirty: true });
-      setValue(`items.${index}.showDescription`, true, { shouldDirty: true });
+      setValue(`items.${index}.show_description`, true, { shouldDirty: true });
     }
 
     if (selected.images?.length) {
       setValue(`items.${index}.images`, selected.images, { shouldDirty: true });
-      setValue(`items.${index}.showImages`, true, { shouldDirty: true });
+      setValue(`items.${index}.show_images`, true, { shouldDirty: true });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedItemId, items]);
@@ -184,14 +193,14 @@ function LineItemRow({ index, symbol, canMoveUp, canMoveDown, onMoveUp, onMoveDo
             <SelectInput name={`items.${index}.item`} label="" loading={itemsLoading} options={items} placeholder="Select item" />
           </div>
           <div className="col-span-6 md:col-span-2">
-            <NumberInput name={`items.${index}.selling_price`} label="" placeholder="0.00" min={0} />
+            <NumberInput name={`items.${index}.selling_price`} label="" placeholder="0.00" min={0} allowDecimal maxDecimals={2} />
           </div>
           <div className="col-span-6 md:col-span-1">
-            <NumberInput name={`items.${index}.qty`} label="" placeholder="1" min={0} />
+            <NumberInput name={`items.${index}.qty`} label="" placeholder="1" min={0} allowDecimal />
           </div>
           <div className="col-span-6 md:col-span-2 text-sm font-medium pt-2 text-right pr-1">{money(t.amount, symbol)}</div>
           <div className="col-span-6 md:col-span-1">
-            <NumberInput name={`items.${index}.taxRate`} label="" placeholder="0" min={0} max={100} />
+            <NumberInput name={`items.${index}.tax_rate`} label="" placeholder="0" min={0} max={100} allowDecimal />
           </div>
           <div className="col-span-6 md:col-span-1 text-sm pt-2 text-right">{money(t.tax, symbol)}</div>
           <div className="col-span-6 md:col-span-1 text-sm font-bold pt-2 text-right">{money(t.total, symbol)}</div>
@@ -202,16 +211,16 @@ function LineItemRow({ index, symbol, canMoveUp, canMoveDown, onMoveUp, onMoveDo
             <div>
               <button
                 type="button"
-                onClick={() => setValue(`items.${index}.showDescription`, !showDescription)}
+                onClick={() => setValue(`items.${index}.show_description`, !show_description)}
                 className="text-xs text-muted-foreground hover:text-foreground inline-flex items-center gap-1 mb-2"
               >
-                {showDescription ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />} Description
+                {show_description ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />} Description
               </button>
-              {showDescription && <TextareaInput name={`items.${index}.description`} label="" placeholder="Description" rows={3} />}
+              {show_description && <TextareaInput name={`items.${index}.description`} label="" placeholder="Description" rows={3} />}
             </div>
 
-            {!showImages ? (
-              <Button type="button" variant="outline" size="sm" className="self-start border-dashed" onClick={() => setValue(`items.${index}.showImages`, true)}>
+            {!show_images ? (
+              <Button type="button" variant="outline" size="sm" className="self-start border-dashed" onClick={() => setValue(`items.${index}.show_images`, true)}>
                 <ImagePlus className="w-4 h-4 mr-1.5" /> Upload Image
               </Button>
             ) : (
@@ -219,7 +228,7 @@ function LineItemRow({ index, symbol, canMoveUp, canMoveDown, onMoveUp, onMoveDo
             )}
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <SelectInput name={`items.${index}.unit`} label="Product Unit" loading={unitsLoading} options={units} placeholder="Select unit" />
+              <SelectInput name={`items.${index}.qty_unit_id`} label="Product Unit" loading={unitsLoading} options={units} placeholder="Select unit" />
               <SelectInput name={`items.${index}.warehouse`} label="Store" loading={warehousesLoading} options={warehouses} placeholder="Select store" />
             </div>
           </>
@@ -236,7 +245,7 @@ function LineItemRow({ index, symbol, canMoveUp, canMoveDown, onMoveUp, onMoveDo
 function GroupCard({ groupIndex, symbol, canMoveUp, canMoveDown, onMoveUp, onMoveDown, onDuplicate, onRemove }) {
   const { control, setValue } = useFormContext();
   const collapsed = useWatch({ control, name: `groups.${groupIndex}.collapsed` });
-  const showImages = useWatch({ control, name: `groups.${groupIndex}.showImages` });
+  const show_images = useWatch({ control, name: `groups.${groupIndex}.show_images` });
   const itemsArray = useFieldArray({ control, name: `groups.${groupIndex}.items` });
 
   return (
@@ -256,8 +265,8 @@ function GroupCard({ groupIndex, symbol, canMoveUp, canMoveDown, onMoveUp, onMov
 
       {!collapsed && (
         <div className="p-3 flex flex-col gap-3">
-          {!showImages ? (
-            <Button type="button" variant="outline" size="sm" className="self-start border-dashed" onClick={() => setValue(`groups.${groupIndex}.showImages`, true)}>
+          {!show_images ? (
+            <Button type="button" variant="outline" size="sm" className="self-start border-dashed" onClick={() => setValue(`groups.${groupIndex}.show_images`, true)}>
               <ImagePlus className="w-4 h-4 mr-1.5" /> Upload Image
             </Button>
           ) : (
@@ -289,56 +298,128 @@ function GroupCard({ groupIndex, symbol, canMoveUp, canMoveDown, onMoveUp, onMov
 }
 
 function GroupItemRow({ groupIndex, itemIndex, symbol, canMoveUp, canMoveDown, onMoveUp, onMoveDown, onDuplicate, onRemove }) {
+  const getUnits = useUnitsStore((s) => s.getForDropdown);
+  const units = useUnitsStore((s) => s.forDropdown);
+  const unitsLoading = useUnitsStore((s) => s.loading);
+
+  const getWarehouses = useWarehouseStore((s) => s.getForDropdown);
+  const warehouses = useWarehouseStore((s) => s.forDropdown);
+  const warehousesLoading = useWarehouseStore((s) => s.loading);
+
+  const getItems = useItemStore((s) => s.getForDropdown);
+  const items = useItemStore((s) => s.forDropdown);
+  const itemsLoading = useItemStore((s) => s.loading);
+
+  useEffect(() => {
+    getUnits();
+    getWarehouses();
+    getItems();
+  }, [getUnits, getWarehouses, getItems]);
+
   const { control, setValue } = useFormContext();
   const base = `groups.${groupIndex}.items.${itemIndex}`;
   const row = useWatch({ control, name: base });
-  const showDescription = useWatch({ control, name: `${base}.showDescription` });
-  const showImages = useWatch({ control, name: `${base}.showImages` });
+  const show_description = useWatch({ control, name: `${base}.show_description` });
+  const show_images = useWatch({ control, name: `${base}.show_images` });
+  const collapsed = useWatch({ control, name: `${base}.collapsed` });
+  const selectedItemId = useWatch({ control, name: `${base}.item` });
   const t = lineTotals(row || {});
 
+  // Auto-fill rate, description and images when an item is selected from the dropdown.
+  useEffect(() => {
+    if (!selectedItemId || !items?.length) return;
+
+    const selected = items.find(
+      (i) => String(i.id || i.value) === String(selectedItemId)
+    );
+    if (!selected) return;
+
+    if (selected.selling_price !== undefined && selected.selling_price !== null) {
+      setValue(`${base}.selling_price`, selected.selling_price, { shouldDirty: true });
+    }
+
+    const nameVal = selected.title || selected.label || selected.name;
+    if (nameVal) {
+      setValue(`${base}.name`, nameVal, { shouldDirty: true });
+    }
+
+    const unitVal = selected.qty_unit_id || selected.qty_unit || selected.unit || selected.unit_id;
+    if (unitVal) {
+      setValue(`${base}.qty_unit_id`, String(unitVal), { shouldDirty: true });
+    }
+
+    if (selected.description) {
+      setValue(`${base}.description`, selected.description, { shouldDirty: true });
+      setValue(`${base}.show_description`, true, { shouldDirty: true });
+    }
+
+    if (selected.images?.length) {
+      setValue(`${base}.images`, selected.images, { shouldDirty: true });
+      setValue(`${base}.show_images`, true, { shouldDirty: true });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedItemId, items]);
+
   return (
-    <div className="rounded-lg border bg-background p-3 flex flex-col gap-2">
-      <div className="flex items-center justify-between">
+    <div className="rounded-lg border overflow-hidden bg-background">
+      <div className="flex items-center justify-between px-3 py-1.5 bg-muted/50 border-b">
         <span className="text-xs font-semibold text-muted-foreground">{itemIndex + 1}.</span>
         <div className="flex items-center gap-0.5">
           <IconBtn label="Move up" onClick={onMoveUp} disabled={!canMoveUp}><ChevronUp className="w-4 h-4" /></IconBtn>
           <IconBtn label="Move down" onClick={onMoveDown} disabled={!canMoveDown}><ChevronDown className="w-4 h-4" /></IconBtn>
+          <IconBtn label="Collapse" onClick={() => setValue(`${base}.collapsed`, !collapsed)}><ChevronsUpDown className="w-4 h-4" /></IconBtn>
           <IconBtn label="Duplicate" onClick={onDuplicate}><Copy className="w-4 h-4" /></IconBtn>
           <IconBtn label="Remove" onClick={onRemove}><Trash2 className="w-4 h-4" /></IconBtn>
         </div>
       </div>
 
-      <div className="grid grid-cols-12 gap-2 items-start">
-        <div className="col-span-12 md:col-span-4">
-          <TextInput name={`${base}.name`} label="" placeholder="Item name / SKU" is_required />
+      <div className="p-3 flex flex-col gap-3">
+        <div className="grid grid-cols-12 gap-2 items-start">
+          <div className="col-span-12 md:col-span-4">
+            <SelectInput name={`${base}.item`} label="" loading={itemsLoading} options={items} placeholder="Select item" />
+          </div>
+          <div className="col-span-6 md:col-span-2">
+            <NumberInput name={`${base}.selling_price`} label="" placeholder="0.00" min={0} allowDecimal maxDecimals={2} />
+          </div>
+          <div className="col-span-6 md:col-span-1">
+            <NumberInput name={`${base}.qty`} label="" placeholder="1" min={0} allowDecimal />
+          </div>
+          <div className="col-span-6 md:col-span-2 text-sm font-medium pt-2 text-right pr-1">{money(t.amount, symbol)}</div>
+          <div className="col-span-6 md:col-span-1">
+            <NumberInput name={`${base}.tax_rate`} label="" placeholder="0" min={0} max={100} allowDecimal />
+          </div>
+          <div className="col-span-6 md:col-span-1 text-sm pt-2 text-right">{money(t.tax, symbol)}</div>
+          <div className="col-span-6 md:col-span-1 text-sm font-bold pt-2 text-right">{money(t.total, symbol)}</div>
         </div>
-        <div className="col-span-6 md:col-span-2">
-          <NumberInput name={`${base}.selling_price`} label="" placeholder="0.00" min={0} />
-        </div>
-        <div className="col-span-6 md:col-span-1">
-          <NumberInput name={`${base}.qty`} label="" placeholder="1" min={0} />
-        </div>
-        <div className="col-span-6 md:col-span-2 text-sm font-medium pt-2 text-right pr-1">{money(t.amount, symbol)}</div>
-        <div className="col-span-6 md:col-span-1">
-          <NumberInput name={`${base}.taxRate`} label="" placeholder="0" min={0} max={100} />
-        </div>
-        <div className="col-span-6 md:col-span-2 text-sm font-bold pt-2 text-right">{money(t.total, symbol)}</div>
-      </div>
 
-      <div className="flex flex-wrap items-center gap-4">
-        <button type="button" onClick={() => setValue(`${base}.showDescription`, !showDescription)} className="text-xs text-muted-foreground hover:text-foreground">
-          {showDescription ? "Hide Description" : "+ Add Description"}
-        </button>
-        <button type="button" onClick={() => setValue(`${base}.showImages`, !showImages)} className="text-xs text-muted-foreground hover:text-foreground">
-          {showImages ? "Hide Image" : "+ Add Image"}
-        </button>
-        <div className="w-40">
-          <SelectInput name={`${base}.unit`} label="" options={units} placeholder="Unit" />
-        </div>
-      </div>
+        {!collapsed && (
+          <>
+            <div>
+              <button
+                type="button"
+                onClick={() => setValue(`${base}.show_description`, !show_description)}
+                className="text-xs text-muted-foreground hover:text-foreground inline-flex items-center gap-1 mb-2"
+              >
+                {show_description ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />} Description
+              </button>
+              {show_description && <TextareaInput name={`${base}.description`} label="" placeholder="Description" rows={3} />}
+            </div>
 
-      {showDescription && <TextareaInput name={`${base}.description`} label="" placeholder="Description" rows={2} />}
-      {showImages && <MultiImageUpload name={`${base}.images`} label="" maxFiles={4} />}
+            {!show_images ? (
+              <Button type="button" variant="outline" size="sm" className="self-start border-dashed" onClick={() => setValue(`${base}.show_images`, true)}>
+                <ImagePlus className="w-4 h-4 mr-1.5" /> Upload Image
+              </Button>
+            ) : (
+              <MultiImageUpload name={`${base}.images`} label="Images" maxFiles={4} />
+            )}
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <SelectInput name={`${base}.qty_unit_id`} label="Product Unit" loading={unitsLoading} options={units} placeholder="Select unit" />
+              <SelectInput name={`${base}.warehouse`} label="Store" loading={warehousesLoading} options={warehouses} placeholder="Select store" />
+            </div>
+          </>
+        )}
+      </div>
     </div>
   );
 }

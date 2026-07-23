@@ -60,19 +60,21 @@ export function NavMain() {
       items: [
         {
           title: "Clients & Prospects",
-          url: ADMIN.COMPANIES.LIST+"?type=2",
+          url: ADMIN.COMPANIES.LIST + "?type=2",
         },
         {
           title: "Quotation & Estimates",
           url: ADMIN.QUOTATIONS.LIST,
         },
+        /*
         {
           title: "Proforma Invoices",
           url: ADMIN.PROFORMA_INVOICES.LIST,
         },
+        */
         {
           title: "Invoices",
-          url:  ADMIN.INVOICES.LIST,
+          url: ADMIN.INVOICES.LIST,
         },
         {
           title: "Payment Receipts",
@@ -99,7 +101,7 @@ export function NavMain() {
       items: [
         {
           title: "Vendors & Suppliers",
-          url: ADMIN.COMPANIES.LIST+"?type=1",
+          url: ADMIN.COMPANIES.LIST + "?type=1",
         },
         {
           title: "Purchases & Expenses",

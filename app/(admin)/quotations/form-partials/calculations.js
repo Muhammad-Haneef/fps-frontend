@@ -5,7 +5,7 @@
 /* ------------------------------------------------------------------ */
 /* Domain option lists                                                 */
 /* ------------------------------------------------------------------ */
-
+/*
 export const CATEGORY_OPTIONS = [
   { id: "rep_repairing", title: "REP (Repairing)" },
   { id: "sale", title: "Sale" },
@@ -29,7 +29,7 @@ export const CLIENT_OPTIONS = [
   { id: "c2", title: "Karachi Auto Spares" },
   { id: "c3", title: "Bilal Enterprises" },
 ];
-
+*/
 export const CURRENCY_OPTIONS = [
   { id: "PKR", title: "Pakistani Rupee (PKR, Rs)" },
   { id: "USD", title: "US Dollar (USD, $)" },
@@ -123,7 +123,7 @@ export function lineTotals(row) {
   const selling_price = Number(row?.selling_price) || 0;
   const qty = Number(row?.qty) || 0;
   const amount = selling_price * qty;
-  const tax = (amount * (Number(row?.taxRate) || 0)) / 100;
+  const tax = (amount * (Number(row?.tax_rate) || 0)) / 100;
   return { amount, tax, total: amount + tax };
 }
 
@@ -148,10 +148,10 @@ export function sumRows(rows = []) {
 export function computeGrandTotals({
   items = [],
   groups = [],
-  overallDiscountType = "percentage",
-  overallDiscountValue = 0,
-  additionalCharges = [],
-  roundMode = "none",
+  overall_discount_type = "percentage",
+  overall_discount_value = 0,
+  additional_charges = [],
+  round_mode = "none",
 }) {
   const itemsSum = sumRows(items);
   const groupsSum = groups.reduce(
@@ -169,14 +169,14 @@ export function computeGrandTotals({
   const tax = itemsSum.tax + groupsSum.tax;
   const qty = itemsSum.qty + groupsSum.qty;
 
-  const discountValue = Number(overallDiscountValue) || 0;
-  const discountAmount = overallDiscountType === "percentage" ? (amount * discountValue) / 100 : discountValue;
+  const discountValue = Number(overall_discount_value) || 0;
+  const discountAmount = overall_discount_type === "percentage" ? (amount * discountValue) / 100 : discountValue;
 
-  const chargesTotal = (additionalCharges || []).reduce((sum, c) => sum + (Number(c?.amount) || 0), 0);
+  const chargesTotal = (additional_charges || []).reduce((sum, c) => sum + (Number(c?.amount) || 0), 0);
 
   let grand = amount + tax - discountAmount + chargesTotal;
-  if (roundMode === "up") grand = Math.ceil(grand);
-  if (roundMode === "down") grand = Math.floor(grand);
+  if (round_mode === "up") grand = Math.ceil(grand);
+  if (round_mode === "down") grand = Math.floor(grand);
 
   return { amount, tax, qty, discountAmount, chargesTotal, grand };
 }
@@ -187,31 +187,35 @@ export function computeGrandTotals({
 
 export function makeLineItem() {
   return {
+    item: "",
     name: "",
     description: "",
     selling_price: 0,
     qty: 1,
-    taxRate: 0,
-    category: "rep_repairing",
-    subcategory: "spare_parts_store",
+    tax_rate: 0,
+    qty_unit_id: "1",
+    warehouse: "",
     images: [],
-    showDescription: false,
-    showImages: false,
+    show_description: false,
+    show_images: false,
     collapsed: false,
   };
 }
 
 export function makeGroupItem() {
   return {
+    item: "",
     name: "",
     description: "",
     selling_price: 0,
     qty: 1,
-    taxRate: 0,
-    unit: "product",
+    tax_rate: 0,
+    qty_unit_id: "1",
+    warehouse: "",
     images: [],
-    showDescription: false,
-    showImages: false,
+    show_description: false,
+    show_images: false,
+    collapsed: false,
   };
 }
 
@@ -220,7 +224,7 @@ export function makeGroup() {
     title: "This is group",
     items: [makeGroupItem()],
     images: [],
-    showImages: false,
+    show_images: false,
     collapsed: false,
   };
 }

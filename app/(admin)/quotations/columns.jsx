@@ -5,41 +5,27 @@ import { useWarehouseStore } from "@/stores/useWarehouseStore";
 
 export const Columns = [
   {
-    header: "Code",
-    accessorKey: "date",
-  },
-  {
     header: "Quot No.",
-    accessorKey: "a",
+    accessorKey: "quotation_number",
   },
   {
     header: "Quote To",
-    accessorKey: "a",
-  },
-  {
-    header: "Items",
-    accessorKey: "a",
+    accessorKey: "quote_to",
+    cell: ({ row }) => <span>{row.original.company?.title ?? "-"}</span>,
   },
   {
     header: "Amount",
-    accessorKey: "a",
+    accessorKey: "amount",
   },
   {
     header: "Status",
-    accessorKey: "a",
-  },
-  {
-    header: "Payment Date",
-    accessorKey: "a",
+    accessorKey: "status",
   },
   {
     id: "actions",
     header: () => <div className="text-center">Actions</div>,
     cell: ({ row }) => (
-      <ActionsBtns
-        record={row.original}
-        useStore={useWarehouseStore}
-      />
+      <ActionsBtns record={row.original} useStore={useWarehouseStore} />
     ),
   },
 ];

@@ -13,7 +13,7 @@ export function AdditionalNotes() {
         <CardTitle>Additional Notes</CardTitle>
       </CardHeader>
       <CardContent>
-        <RichTextEditor name="additionalNotes" label="" placeholder="Write additional notes..." height={180} toolbarConfig="basic" />
+        <RichTextEditor name="additional_notes" label="" placeholder="Write additional notes..." height={180} toolbarConfig="basic" />
       </CardContent>
     </Card>
   );
@@ -21,7 +21,7 @@ export function AdditionalNotes() {
 
 export function AdditionalInfo() {
   const { control } = useFormContext();
-  const { fields, append, remove } = useFieldArray({ control, name: "additionalInfo" });
+  const { fields, append, remove } = useFieldArray({ control, name: "additional_info" });
 
   return (
     <Card>
@@ -32,10 +32,10 @@ export function AdditionalInfo() {
         {fields.map((field, i) => (
           <div key={field.id} className="flex items-end gap-3">
             <div className="w-48">
-              <TextInput name={`additionalInfo.${i}.label`} label="" placeholder="Field label" />
+              <TextInput name={`additional_info.${i}.label`} label="" placeholder="Field label" />
             </div>
             <div className="flex-1">
-              <TextInput name={`additionalInfo.${i}.value`} label="" placeholder="Enter value" />
+              <TextInput name={`additional_info.${i}.value`} label="" placeholder="Enter value" />
             </div>
             <button type="button" onClick={() => remove(i)} className="text-muted-foreground hover:text-destructive mb-2" aria-label="Remove field">
               <X className="w-4 h-4" />

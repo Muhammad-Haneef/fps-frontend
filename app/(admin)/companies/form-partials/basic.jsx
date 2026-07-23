@@ -21,7 +21,7 @@ export default function BasicInfo() {
 
   useEffect(() => {
     if (type_id > 0) {
-      setValue("type_id", String(type_id));
+      setValue("type_id", Number(type_id));
     }
   }, [type_id, setValue]);
 

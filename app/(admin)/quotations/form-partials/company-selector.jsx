@@ -22,7 +22,7 @@ export default function CompanySelector() {
         <CardTitle>Quotation From</CardTitle>
         <CardDescription>Your business details as they'll appear on the document</CardDescription>
         <SelectInput
-          name="company"
+          name="business_id"
           label="Business Name"
           placeholder="Select a business"
           options={BUSINESS_OPTIONS}
@@ -33,17 +33,17 @@ export default function CompanySelector() {
       <CardContent className="grid grid-cols-1  gap-4">
         {/*
         <div className="sm:col-span-2">
-          <TextInput name="company.name" label="Business Name" is_required placeholder="Your business name" />
+          <TextInput name="business.name" label="Business Name" is_required placeholder="Your business name" />
         </div>
         <div className="sm:col-span-2">
-          <TextInput name="company.address" label="Address" placeholder="Street address" />
+          <TextInput name="business.address" label="Address" placeholder="Street address" />
         </div>
-        <TextInput name="company.city" label="City" placeholder="Karachi" />
-        <SelectInput name="company.country" label="Country" placeholder="Select country" options={COUNTRY_OPTIONS} />
-        <PhoneInput name="company.phone" label="Phone" placeholder="+92 3xx xxxxxxx" />
-        <TextInput name="company.email" label="Email" placeholder="business@example.com" />
-        <TextInput name="company.ntn" label="NTN" placeholder="National Tax Number" />
-        <TextInput name="company.gst" label="GST / Sales Tax No." placeholder="Optional" />
+        <TextInput name="business.city" label="City" placeholder="Karachi" />
+        <SelectInput name="business.country" label="Country" placeholder="Select country" options={COUNTRY_OPTIONS} />
+        <PhoneInput name="business.phone" label="Phone" placeholder="+92 3xx xxxxxxx" />
+        <TextInput name="business.email" label="Email" placeholder="business@example.com" />
+        <TextInput name="business.ntn" label="NTN" placeholder="National Tax Number" />
+        <TextInput name="business.gst" label="GST / Sales Tax No." placeholder="Optional" />
         */}
 
         <div>

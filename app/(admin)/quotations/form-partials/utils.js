@@ -161,10 +161,10 @@ export function calculateTotalTax(items = []) {
 // Calculate grand total
 export function calculateGrandTotal({
   items = [],
-  overallDiscountType = "percentage",
-  overallDiscountValue = 0,
-  additionalCharges = [],
-  roundMode = "none", // "none", "up", "down"
+  overall_discount_type = "percentage",
+  overall_discount_value = 0,
+  additional_charges = [],
+  round_mode = "none", // "none", "up", "down"
 }) {
   const subtotal = calculateSubtotal(items);
   const totalTax = calculateTotalTax(items);
@@ -172,21 +172,21 @@ export function calculateGrandTotal({
   // Calculate overall discount
   const overallDiscount = calculateDiscount({
     amount: subtotal,
-    discountType: overallDiscountType,
-    discountValue: overallDiscountValue
+    discountType: overall_discount_type,
+    discountValue: overall_discount_value
   });
   
   // Calculate additional charges total
-  const chargesTotal = additionalCharges.reduce((sum, charge) => {
+  const chargesTotal = additional_charges.reduce((sum, charge) => {
     return sum + (parseFloat(charge.amount) || 0);
   }, 0);
   
   let grandTotal = subtotal + totalTax - overallDiscount + chargesTotal;
   
   // Apply rounding
-  if (roundMode === "up") {
+  if (round_mode === "up") {
     grandTotal = Math.ceil(grandTotal);
-  } else if (roundMode === "down") {
+  } else if (round_mode === "down") {
     grandTotal = Math.floor(grandTotal);
   }
   

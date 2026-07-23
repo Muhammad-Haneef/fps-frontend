@@ -4,18 +4,18 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CheckboxInput } from "@/components/form";
 
 const OPTIONS = [
-  { name: "advancedOptions.displayUnit", label: "Display unit for each item" },
-  { name: "advancedOptions.mergeQuantity", label: "Merge unit with quantity" },
-  { name: "advancedOptions.showTaxSummary", label: "Show tax summary in quotation" },
-  { name: "advancedOptions.hideCountry", label: "Hide place / country of supply" },
-  { name: "advancedOptions.hideOriginalImages", label: "Hide original images in line items" },
-  { name: "advancedOptions.showThumbnails", label: "Show thumbnails in separate column" },
-  { name: "advancedOptions.showFullDescription", label: "Show description in full width" },
-  { name: "advancedOptions.hideGroupSubtotal", label: "Hide subtotal for group items" },
-  { name: "advancedOptions.showSKU", label: "Show SKU in quotation" },
-  { name: "advancedOptions.showSerialNumber", label: "Show serial numbers in quotation" },
-  { name: "advancedOptions.displayBatchDetails", label: "Display batch details in columns" },
-  { name: "advancedOptions.showItemImages", label: "Show item images in quotation" },
+  { name: "advanced_options.display_unit", label: "Display unit for each item" },
+  { name: "advanced_options.merge_quantity", label: "Merge unit with quantity" },
+  { name: "advanced_options.show_tax_summary", label: "Show tax summary in quotation" },
+  { name: "advanced_options.hide_country", label: "Hide place / country of supply" },
+  { name: "advanced_options.hide_original_images", label: "Hide original images in line items" },
+  { name: "advanced_options.show_thumbnails", label: "Show thumbnails in separate column" },
+  { name: "advanced_options.show_full_description", label: "Show description in full width" },
+  { name: "advanced_options.hide_group_subtotal", label: "Hide subtotal for group items" },
+  { name: "advanced_options.show_sku", label: "Show SKU in quotation" },
+  { name: "advanced_options.show_serial_number", label: "Show serial numbers in quotation" },
+  { name: "advanced_options.display_batch_details", label: "Display batch details in columns" },
+  { name: "advanced_options.show_item_images", label: "Show item images in quotation" },
 ];
 
 export default function AdvancedOptions() {

@@ -14,7 +14,7 @@ export default function MetaCard() {
 
   const [dueDateOpen, setDueDateOpen] = useState(false);
 
-  const { fields, append, remove } = useFieldArray({ control, name: "customFields" });
+  const { fields, append, remove } = useFieldArray({ control, name: "custom_fields" });
 
   return (
     <div className="pt-6 flex justify-between items-start gap-6">

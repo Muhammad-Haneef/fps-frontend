@@ -25,24 +25,24 @@ export default function Summary() {
 
   const items = useWatch({ control, name: "items" });
   const groups = useWatch({ control, name: "groups" });
-  const overallDiscountType = useWatch({ control, name: "overallDiscountType" });
-  const overallDiscountValue = useWatch({ control, name: "overallDiscountValue" });
-  const roundMode = useWatch({ control, name: "roundMode" });
-  const additionalCharges = useWatch({ control, name: "additionalCharges" });
+  const overall_discount_type = useWatch({ control, name: "overall_discount_type" });
+  const overall_discount_value = useWatch({ control, name: "overall_discount_value" });
+  const round_mode = useWatch({ control, name: "round_mode" });
+  const additional_charges = useWatch({ control, name: "additional_charges" });
 
-  const chargesArray = useFieldArray({ control, name: "additionalCharges" });
+  const chargesArray = useFieldArray({ control, name: "additional_charges" });
 
   const totals = useMemo(
     () =>
       computeGrandTotals({
         items,
         groups,
-        overallDiscountType,
-        overallDiscountValue,
-        additionalCharges,
-        roundMode,
+        overall_discount_type,
+        overall_discount_value,
+        additional_charges,
+        round_mode,
       }),
-    [items, groups, overallDiscountType, overallDiscountValue, additionalCharges, roundMode]
+    [items, groups, overall_discount_type, overall_discount_value, additional_charges, round_mode]
   );
 
   return (
@@ -62,12 +62,13 @@ export default function Summary() {
           </div>
 
           <div className="grid grid-cols-2 gap-2 items-end">
-            <SelectInput name="overallDiscountType" label="Discount" options={DISCOUNT_TYPE_OPTIONS} placeholder="Type" />
+            <SelectInput name="overall_discount_type" label="Discount" options={DISCOUNT_TYPE_OPTIONS} placeholder="Type" />
             <NumberInput
-              name="overallDiscountValue"
+              name="overall_discount_value"
               label=""
-              placeholder={overallDiscountType === "percentage" ? "0%" : "0.00"}
+              placeholder={overall_discount_type === "percentage" ? "0%" : "0.00"}
               min={0}
+              allowDecimal
             />
           </div>
 
@@ -84,10 +85,10 @@ export default function Summary() {
                 {chargesArray.fields.map((f, i) => (
                   <div key={f.id} className="flex items-end gap-2">
                     <div className="flex-1">
-                      <TextInput name={`additionalCharges.${i}.label`} label="" placeholder="e.g. Delivery" />
+                      <TextInput name={`additional_charges.${i}.label`} label="" placeholder="e.g. Delivery" />
                     </div>
                     <div className="w-28">
-                      <NumberInput name={`additionalCharges.${i}.amount`} label="" placeholder="0.00" min={0} />
+                      <NumberInput name={`additional_charges.${i}.amount`} label="" placeholder="0.00" min={0} allowDecimal maxDecimals={2} />
                     </div>
                     <button type="button" onClick={() => chargesArray.remove(i)} className="text-muted-foreground hover:text-destructive mb-2" aria-label="Remove charge">
                       <X className="w-4 h-4" />
@@ -105,7 +106,7 @@ export default function Summary() {
             )}
           </div>
 
-          <SelectInput name="roundMode" label="Rounding" options={ROUND_MODE_OPTIONS} placeholder="No rounding" />
+          <SelectInput name="round_mode" label="Rounding" options={ROUND_MODE_OPTIONS} placeholder="No rounding" />
 
           <div className="flex items-center justify-between border-t pt-3">
             <span className="text-base font-extrabold">TOTAL</span>

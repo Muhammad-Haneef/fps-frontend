@@ -1,7 +1,9 @@
 "use client";
 
 import React from "react";
+import { useEffect, useMemo } from "react";
 import { useForm, FormProvider } from "react-hook-form";
+import { useParams } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { Button } from "@/components/ui/button";
@@ -27,6 +29,8 @@ import Attachments from "./form-partials/attachments";
 import { AdditionalNotes, AdditionalInfo } from "./form-partials/additional-sections";
 import AdvancedOptions from "./form-partials/advanced-options";
 
+import { useQuotationStore } from "@/stores/useQuotationStore";
+
 const DEFAULT_VALUES = {
   // Header
   title: "QUOTATION",
@@ -34,56 +38,39 @@ const DEFAULT_VALUES = {
   logo: null,
 
   // Meta Information
-  quotationNumber: generateQuotationNumber(),
-  quotationDate: new Date(),
-  dueDate: null,
-  reminderDays: 3,
-  customFields: [],
+  quotation_number: generateQuotationNumber(),
+  date: new Date(),
+  due_date: null,
+  reminder_days: 3,
+  custom_fields: [],
 
-  // Company & Client
-  company: {
-    name: "",
-    address: "",
-    city: "",
-    country: "",
-    phone: "",
-    email: "",
-    ntn: "",
-    gst: "",
-  },
-  client: null,
-  clientId: "",
+  // Business & Company
+  business: null,
+  business_id: "1",
+  company: null,
+  company_id: "",
 
   // Shipping
-  shippingEnabled: false,
-  shippingDetails: {
-    name: "",
-    phone: "",
-    address: "",
-    city: "",
-    state: "",
-    postalCode: "",
-    country: "",
-    notes: "",
-  },
+  shipping_enabled: false,
+  shipping_address: "",
 
   // Currency & Tax
   currency: "PKR",
-  numberFormat: "1,234.00",
+  number_format: "1,234.00",
 
   // Items — start with a single blank line, matching the paper-form feel
   items: [makeLineItem()],
   groups: [],
 
   // Summary Calculations
-  overallDiscountType: "percentage",
-  overallDiscountValue: 0,
-  additionalCharges: [],
-  roundMode: "none",
+  overall_discount_type: "percentage",
+  overall_discount_value: 0,
+  additional_charges: [],
+  round_mode: "none",
   signature: null,
 
   // Contact Details
-  contactDetails: {
+  contact_details: {
     phone: "",
     mobile: "",
     email: "",
@@ -98,29 +85,41 @@ const DEFAULT_VALUES = {
   attachments: [],
 
   // Additional Notes / Info
-  additionalNotes: "",
-  additionalInfo: [],
+  additional_notes: "",
+  additional_info: [],
 
   // Advanced Options
-  advancedOptions: {
-    displayUnit: true,
-    mergeQuantity: false,
-    showTaxSummary: true,
-    hideCountry: false,
-    hideOriginalImages: false,
-    showThumbnails: true,
-    showFullDescription: false,
-    hideGroupSubtotal: false,
-    showSKU: true,
-    showSerialNumber: false,
-    displayBatchDetails: false,
-    showItemImages: true,
+  advanced_options: {
+    display_unit: true,
+    merge_quantity: false,
+    show_tax_summary: true,
+    hide_country: false,
+    hide_original_images: false,
+    show_thumbnails: true,
+    show_full_description: false,
+    hide_group_subtotal: false,
+    show_sku: true,
+    show_serial_number: false,
+    display_batch_details: false,
+    show_item_images: true,
   },
 };
 
 export default function ModuleForm() {
+
+  const { id } = useParams();
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [isSavingDraft, setIsSavingDraft] = React.useState(false);
+
+  const { updateRecord, saveRecord, getRecord, record, loading } =
+    useQuotationStore();
+
+
+  useEffect(() => {
+    if (id && id !== "add") {
+      getRecord(id);
+    }
+  }, [id, getRecord]);
 
   const methods = useForm({
     resolver: zodResolver(quotationSchema),
@@ -130,16 +129,34 @@ export default function ModuleForm() {
 
   const { formState } = methods;
 
-  const onSubmit = async (data) => {
+  const onSubmit = async (formValues) => {
     setIsSubmitting(true);
     try {
-      console.log("Quotation Data:", data);
+      const data = new FormData();
+
+      Object.entries(formValues).forEach(([key, value]) => {
+        if (key === "logo") {
+          if (value instanceof File) {
+            data.append("logo", value);
+          }
+        } else {
+          data.append(key, value ?? "");
+        }
+      });
+
+      if (formValues.id > 0) {
+        await updateRecord(formValues);
+      } else {
+        await saveRecord(formValues);
+      }
+
+      //console.log("Quotation Data:", data);
 
       // Here you would typically send data to your API
       // await api.createQuotation(data);
 
-      await new Promise((resolve) => setTimeout(resolve, 1500)); // Simulate API call
-      alert("Quotation created successfully!");
+      //await new Promise((resolve) => setTimeout(resolve, 1500)); // Simulate API call
+      //alert("Quotation created successfully!");
 
       // Optionally reset or redirect
       // methods.reset();
@@ -182,7 +199,7 @@ export default function ModuleForm() {
     // Reset form for a new quotation
     methods.reset({
       ...DEFAULT_VALUES,
-      quotationNumber: generateQuotationNumber(),
+      quotation_number: generateQuotationNumber(),
     });
   }, onInvalid);
 
@@ -200,7 +217,10 @@ export default function ModuleForm() {
   return (
     <div className="min-h-screen bg-background p-6">
       <FormProvider {...methods}>
-        <form onSubmit={methods.handleSubmit(onSubmit, onInvalid)} className="max-w-[1600px] mx-auto">
+        <form
+          onSubmit={methods.handleSubmit(onSubmit, onInvalid)}
+          className="max-w-[1600px] mx-auto"
+        >
           {/* Header */}
           <Header />
 
@@ -215,17 +235,16 @@ export default function ModuleForm() {
             <ClientSelector />
           </div>
 
-
           {/* Shipping Details */}
           <div className="mb-6">
             <ShippingDetails />
           </div>
 
-          {/* Currency & Configuration
+          {/* Currency & Configuration*/}
           <div className="mb-6">
             <CurrencySelector />
           </div>
-           */}
+
 
           {/* Main Content - Items Table & Summary Sidebar */}
           <div className="mb-6">
@@ -233,51 +252,52 @@ export default function ModuleForm() {
             <div>
               <ItemsTable />
               {formState.errors?.items?.message && (
-                <p className="text-sm text-destructive mt-2">{formState.errors.items.message}</p>
+                <p className="text-sm text-destructive mt-2">
+                  {formState.errors.items.message}
+                </p>
               )}
             </div>
-
           </div>
           {/* Summary Sidebar - Takes 1/3 width on large screens */}
           <div className="ml-auto w-1/3">
             <Summary />
           </div>
 
-          {/* Contact Detailsx
+          {/* Contact Detailsx*/}
           <div className="mb-6">
             <ContactDetails />
           </div>
-           */}
 
-          {/* Terms & Conditions
+
+          {/* Terms & Conditions*/}
           <div className="mb-6">
             <Terms />
           </div>
-           */}
 
-          {/* Attachments
+
+          {/* Attachments */}
           <div className="mb-6">
             <Attachments />
           </div>
-           */}
 
-          {/* Additional Notesx
+
+          {/* Additional Notesx*/}
           <div className="mb-6">
             <AdditionalNotes />
           </div>
-           */}
 
-          {/* Additional Info
+
+          {/* Additional Info*/}
           <div className="mb-6">
             <AdditionalInfo />
           </div>
-           */}
 
-          {/* Advanced Options
+
+          {/* Advanced Options*/}
           <div className="mb-6">
             <AdvancedOptions />
           </div>
-           */}
+
 
           {/* Footer Action Buttons - Sticky */}
           <div className="sticky bottom-0 bg-background border-t border-border py-4 mt-8 -mx-6 px-6 z-10 shadow-lg">

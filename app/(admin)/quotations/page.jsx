@@ -8,16 +8,16 @@ import AddButton from "@/components/form/add-button";
 
 import { Columns } from "./columns";
 
-import {useWarehouseStore} from "@/stores/useWarehouseStore";
+import {useQuotationStore} from "@/stores/useQuotationStore";
 
 export default function Page() {
   
 
-  const getRecords = useWarehouseStore((s) => s.getRecords);
-  const records = useWarehouseStore((s) => s.records);
+  const getRecords = useQuotationStore((s) => s.getRecords);
+  const records = useQuotationStore((s) => s.records);
 
   useEffect(() => {
-    //getRecords();
+    getRecords();
   }, [getRecords]);
 
 

@@ -12,22 +12,6 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { HelpCircle, Calendar as CalendarIcon, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-/**
- * Next.js / React Server Components serializes `Date` objects on the wire as
- * "$D" + date.toISOString() (its Flight protocol format). If a Date prop
- * crosses a server->client boundary (e.g. a server-fetched record passed
- * into a client form's defaultValues) without being explicitly converted,
- * this raw "$D..." string ends up as the field value instead of a real date
- * or clean ISO string. Strip it here so it never reaches the calendar parser
- * or gets submitted to the API as-is.
- */
-function stripRscDatePrefix(raw) {
-  if (typeof raw === "string" && raw.startsWith("$D")) {
-    return raw.slice(2);
-  }
-  return raw;
-}
-
 function DatePickerInputBase({
   label, error, helperText, tooltip, disabled, placeholder = "Pick a date",
   id, is_required, value, onChange, onBlur, minDate, maxDate,
@@ -40,24 +24,10 @@ function DatePickerInputBase({
 
   useEffect(() => {
     if (value) {
-      const cleaned = stripRscDatePrefix(value);
-      const parsed = new Date(cleaned);
-
-      if (!isNaN(parsed.getTime())) {
-        setSelectedDate(parsed);
-
-        // The raw value carried the RSC "$D" prefix — sync the corrected
-        // value back into the form so a submit-without-touching doesn't
-        // send the dirty string to the API.
-        if (cleaned !== value && onChange) {
-          onChange(parsed.toISOString());
-        }
-      } else {
-        setSelectedDate(null);
-      }
-    } else {
-      setSelectedDate(null);
-    }
+      const parsed = new Date(value);
+      if (!isNaN(parsed.getTime())) { setSelectedDate(parsed); }
+      else { setSelectedDate(null); }
+    } else { setSelectedDate(null); }
   }, [value]);
 
   const handleSelect = (date) => {

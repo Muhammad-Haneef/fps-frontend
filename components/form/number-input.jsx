@@ -29,6 +29,7 @@ function NumberInputBase({
   allowNegative = false,
   allowDecimal = false,
   maxDigits = 20,
+  maxDecimals = 2,
   value,
   onChange,
   onBlur,
@@ -38,12 +39,28 @@ function NumberInputBase({
 }) {
   const generatedId = useId();
   const inputId = id || generatedId;
-  
+
   const [internalValue, setInternalValue] = useState(value ?? "");
 
   useEffect(() => {
-    setInternalValue(value ?? "");
-  }, [value]);
+    if (value === undefined || value === null || value === "") {
+      setInternalValue("");
+      return;
+    }
+
+    const nextFloat = parseFloat(value);
+    const currFloat = parseFloat(internalValue);
+
+    if (isNaN(nextFloat)) {
+      setInternalValue("");
+    } else if (isNaN(currFloat) || nextFloat !== currFloat) {
+      if (allowDecimal) {
+        setInternalValue(nextFloat.toFixed(maxDecimals));
+      } else {
+        setInternalValue(Math.round(nextFloat).toString());
+      }
+    }
+  }, [value, allowDecimal, maxDecimals]);
 
   const handleChange = (e) => {
     let inputVal = e.target.value;
@@ -57,8 +74,8 @@ function NumberInputBase({
         ? /^-?\d*\.?\d*$/
         : /^\d*\.?\d*$/
       : allowNegative
-      ? /^-?\d*$/
-      : /^\d*$/;
+        ? /^-?\d*$/
+        : /^\d*$/;
 
     if (!regex.test(inputVal)) return;
 
@@ -66,7 +83,7 @@ function NumberInputBase({
     const [integerPart, decimalPart] = cleanVal.split(".");
 
     if (integerPart && integerPart.length > maxDigits) return;
-    if (decimalPart && decimalPart.length > 10) return;
+    if (decimalPart && decimalPart.length > maxDecimals) return;
 
     setInternalValue(inputVal);
 
@@ -81,20 +98,46 @@ function NumberInputBase({
     }
   };
 
+  const handleBlur = (e) => {
+    let finalVal = internalValue;
+    if (internalValue !== "") {
+      const num = parseFloat(internalValue);
+      if (!isNaN(num)) {
+        if (allowDecimal) {
+          finalVal = num.toFixed(maxDecimals);
+        } else {
+          finalVal = Math.round(num).toString();
+        }
+        setInternalValue(finalVal);
+      }
+    }
+    if (onChange && finalVal !== internalValue) {
+      onChange({
+        ...e,
+        target: {
+          ...e.target,
+          value: finalVal,
+        },
+      });
+    }
+    if (onBlur) onBlur(e);
+  };
+
   const adjustValue = (amount) => {
     if (disabled) return;
     const currentNum = parseFloat(internalValue) || 0;
     let newNum = currentNum + amount;
-    
+
     if (min !== undefined && newNum < min) newNum = min;
     if (max !== undefined && newNum > max) newNum = max;
-    
+
     const stepString = step.toString();
     const decimalPlaces = stepString.includes(".") ? stepString.split(".")[1].length : 0;
-    const formattedValue = decimalPlaces > 0 ? newNum.toFixed(decimalPlaces) : newNum.toString();
+    const activeDecimals = Math.min(decimalPlaces, maxDecimals);
+    const formattedValue = activeDecimals > 0 ? newNum.toFixed(activeDecimals) : newNum.toString();
 
     setInternalValue(formattedValue);
-    
+
     if (onChange) {
       onChange({
         target: {
@@ -111,7 +154,7 @@ function NumberInputBase({
     <div className={cn("w-full flex flex-col gap-1.5", className)} dir={dir}>
       {label && (
         <div className="flex items-center gap-1.5">
-          <Label 
+          <Label
             htmlFor={inputId}
             className={cn(
               "text-xs font-semibold uppercase tracking-wider text-muted-foreground transition-colors",
@@ -122,7 +165,7 @@ function NumberInputBase({
             {label}
             {is_required && <span className="text-destructive ml-1">*</span>}
           </Label>
-          
+
           {tooltip && (
             <TooltipProvider>
               <Tooltip delayDuration={300}>
@@ -155,7 +198,7 @@ function NumberInputBase({
           type="text"
           value={internalValue}
           onChange={handleChange}
-          onBlur={onBlur}
+          onBlur={handleBlur}
           placeholder={placeholder}
           disabled={disabled}
           className={cn(

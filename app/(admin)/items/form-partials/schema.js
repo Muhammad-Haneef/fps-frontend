@@ -15,7 +15,7 @@ export const Schema = z.object({
   images: z.array(z.any()).optional(),
   title: z.string().min(2, "Title must be at least 2 characters"),
   sku: z.string().optional(),
-  qty_unit_id: z.string().optional(),
+  qty_unit_id: z.number().optional(),
   description: z.string().optional(),
 
   // Vendors & Tags
@@ -94,7 +94,7 @@ export const FormValues = (record = {}) => ({
   images: record?.images ?? [],
   title: record?.title ?? "",
   sku: record?.sku ?? "",
-  qty_unit_id: record?.qty_unit_id ?? "",
+  qty_unit_id: Number(record?.qty_unit_id ?? null),
   description: record?.description ?? "",
 
   // Vendors & Tags
