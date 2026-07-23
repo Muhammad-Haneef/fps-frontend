@@ -1,6 +1,6 @@
 "use client";
 
-import { use, useEffect } from "react";
+import { use, useEffect, Suspense } from "react";
 
 import { useSearchParams } from "next/navigation";
 
@@ -11,13 +11,9 @@ import { PageHeader } from "@/components/layouts/admin/page-header";
 import BackButton from "@/components/form/back-button";
 //import { useCompanyStore } from "@/stores/useCompanyStore";
 
-export default function Page({ params }) {
-  //export default function Page() {
-
+function PageContent({ id }) {
   const searchParams = useSearchParams();
   const type_id = Number(searchParams.get("type")) || 0;
-
-  const { id } = use(params);
   const isNew = id === "add";
 
   /*
@@ -41,5 +37,15 @@ export default function Page({ params }) {
       />
       <ModuleForm />
     </div>
+  );
+}
+
+export default function Page({ params }) {
+  const { id } = use(params);
+
+  return (
+    <Suspense fallback={<div className="space-y-6 py-8">Loading...</div>}>
+      <PageContent id={id} />
+    </Suspense>
   );
 }

@@ -1,5 +1,6 @@
 "use client";
 
+import { Suspense } from "react";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import { PlusIcon } from "lucide-react";
@@ -12,7 +13,7 @@ const VARIANT_CLASSES = {
     "bg-gray-900 text-white shadow-sm hover:bg-gray-800",
 };
 
-export default function AddButton({ variation = "default" }) {
+function AddButtonContent({ variation = "default" }) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
@@ -34,5 +35,18 @@ export default function AddButton({ variation = "default" }) {
         <span className="relative text-xs">Add New</span>
       </button>
     </Link>
+  );
+}
+
+export default function AddButton({ variation = "default" }) {
+  return (
+    <Suspense fallback={
+      <div className="inline-flex cursor-pointer items-center gap-2 rounded-md px-4 py-2 font-semibold bg-gray-200 text-gray-500">
+        <PlusIcon className="h-4 w-4 stroke-[2.5]" />
+        <span className="text-xs">Add New</span>
+      </div>
+    }>
+      <AddButtonContent variation={variation} />
+    </Suspense>
   );
 }

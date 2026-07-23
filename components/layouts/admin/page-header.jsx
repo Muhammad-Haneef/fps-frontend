@@ -1,10 +1,11 @@
 "use client";
 
+import { Suspense } from "react";
 import { usePathname } from "next/navigation";
 
 import { cn } from "@/lib/utils";
 
-export function PageHeader({
+function PageHeaderContent({
   title,
   description,
   actions,
@@ -43,5 +44,13 @@ export function PageHeader({
         <div className="flex shrink-0 items-center gap-2">{actions}</div>
       )}
     </div>
+  );
+}
+
+export function PageHeader(props) {
+  return (
+    <Suspense fallback={<div className="h-16 border-b pb-5" />}>
+      <PageHeaderContent {...props} />
+    </Suspense>
   );
 }

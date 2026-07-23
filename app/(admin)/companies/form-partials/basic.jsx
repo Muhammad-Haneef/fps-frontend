@@ -1,6 +1,6 @@
 "use client";
 
-import { use, useEffect } from "react";
+import { use, useEffect, Suspense } from "react";
 
 import { useSearchParams } from "next/navigation";
 
@@ -13,7 +13,7 @@ import DropDownByStore from "@/components/lookups/dropdown-by-store";
 import { useIndustryStore } from "@/stores/meta-data/useIndustryStore";
 import { useCompanyTypesStore } from "@/stores/meta-data/useCompanyTypesStore";
 
-export default function BasicInfo() {
+function BasicInfoContent() {
 
   const { setValue } = useFormContext();
   const searchParams = useSearchParams();
@@ -64,5 +64,13 @@ export default function BasicInfo() {
       </div>
       {/* <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"></div> */}
     </>
+  );
+}
+
+export default function BasicInfo() {
+  return (
+    <Suspense fallback={<div className="py-8">Loading...</div>}>
+      <BasicInfoContent />
+    </Suspense>
   );
 }

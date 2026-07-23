@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 
 import {getCompanyTypeById} from "@/helper/ClientSide"
@@ -13,7 +13,7 @@ import { Columns } from "./columns";
 
 import { useCompanyStore } from "@/stores/useCompanyStore";
 
-export default function Page() {
+function PageContent() {
   const searchParams = useSearchParams();
 
   const type_id = Number(searchParams.get("type")) || 0;
@@ -43,5 +43,13 @@ export default function Page() {
         <DataTable columns={Columns} data={filteredRecords} loading={loading} />
       </div>
     </>
+  );
+}
+
+export default function Page() {
+  return (
+    <Suspense fallback={<div className="container mx-auto py-8">Loading...</div>}>
+      <PageContent />
+    </Suspense>
   );
 }

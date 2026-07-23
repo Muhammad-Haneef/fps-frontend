@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 
 import Link from "next/link";
@@ -8,7 +8,7 @@ import { SquarePen, Trash2, UndoDot, Loader2 } from "lucide-react";
 
 import { useConfirmStore } from "@/stores/useConfirmStore";
 
-export default function ActionsBtns({ record, useStore }) {
+function ActionsBtnsContent({ record, useStore }) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
@@ -81,3 +81,12 @@ export default function ActionsBtns({ record, useStore }) {
     </div>
   );
 }
+
+export default function ActionsBtns({ record, useStore }) {
+  return (
+    <Suspense fallback={<Loader2 className="h-4 w-4 animate-spin text-gray-600" />}>
+      <ActionsBtnsContent record={record} useStore={useStore} />
+    </Suspense>
+  );
+}
+
